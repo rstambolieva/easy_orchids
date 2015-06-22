@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Easy Orchids</string>
+    <string-array name="main_menu">
+        <item>Schedule</item>
+        <item>My Orchids</item>
+        <item>Orchid Care</item>
+        <item>Settings</item>
+        <item>Help &amp; Feedback</item>
+    </string-array>
+    <string-array name="my_orchids">
+        <item>Phaelanopsis 1</item>
+        <item>Phaelanopsis 2</item>
+        <item>Phaelanopsis 3</item>
+        <item>Dendrobium Nobile 1</item>
+        <item>Dendrobium Nobile 2</item>
+        <item>Dendrobium Phaelanopsis 1</item>
+        <item>Dendrobium Phaelanopsis 2</item>
+    </string-array>
+</resources>
