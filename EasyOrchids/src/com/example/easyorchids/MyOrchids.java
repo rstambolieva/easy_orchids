@@ -2,13 +2,15 @@ package com.example.easyorchids;
 
 import android.app.ListFragment;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.view.ViewGroup;
 import android.widget.ListView;
 
 /*
- * This class represents the my orchids list with all my orchids
- * Currently it populates the data adapter from string array, but must e refactored to use a DB
+ * This class represents the my orchids list view with all my orchids.
+ * It populates the orchids from the DB
  */
 public class MyOrchids extends ListFragment {
 	public static final String ARG_MENU_ITEM_NUMBER = "menu_item_number";
@@ -16,15 +18,37 @@ public class MyOrchids extends ListFragment {
 	private String[] orchidsList;
 	
 	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+//		return super.onCreateView(inflater, container, savedInstanceState);
+		
+		View rootView = inflater.inflate(R.layout.myorchids_list_view, container,
+				false);
+		return rootView;
+	}
+	@Override
 	  public void onActivityCreated(Bundle savedInstanceState) {
 	    super.onActivityCreated(savedInstanceState);
 	    
-	    orchidsList =  getResources().getStringArray(R.array.my_orchids);
+//	    orchidsList =  getResources().getStringArray(R.array.my_orchids);
+//	    
+//	    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+//	      R.layout.myorchid_list_item, orchidsList);
 	    
-	    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-	      R.layout.myorchid_list_item, orchidsList);
+	    // Getting the Activity as the Activity is a Context to provide to the dbHelper for context
+	    DBAdapter dbAdapter = new DBAdapter(getActivity());
 	    
-	    setListAdapter(adapter);
+	    // Open the DB for writing
+	    Log.d(Constants.TAG, "Opening DB");
+	    dbAdapter.open();
+	    long id;
+	    
+	    Log.d(Constants.TAG, "Inserting orchids");
+        id = dbAdapter.insertOrchid("Pah 1", OrchidTypes.PHAELANOPSIS, "1 Sep", "1 Sep");
+        id = dbAdapter.insertOrchid("Pah 2", OrchidTypes.PHAELANOPSIS, "1 Sep", "1 Sep");
+	    
+//	    setListAdapter();
 	  }
 	
 	  @Override
