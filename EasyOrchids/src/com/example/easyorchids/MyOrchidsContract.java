@@ -19,7 +19,7 @@ public final class MyOrchidsContract {
 	// Class that defines MyOrchids table
 	public static abstract class MyOrchidsTable implements BaseColumns {
 		public static final String TABLE_NAME = "MyOrchids";
-//		public static final String COLUMN_NAME_ORCHID_ID = "orchidid";
+		public static final String COLUMN_NAME_ORCHID_ID = "_id";
 		public static final String COLUMN_NAME_ORCHID_NAME = "name";
 		// public static final String COLUMN_NAME_ORCHID_PICTURE = "picture";
 		// TODO: add support for pictures

@@ -22,9 +22,9 @@ public class DBAdapter {
 	private static final int DATABASE_VERSION = 1;
 	private static final String TEXT_TYPE = " TEXT";
 	private static final String COMMA_SEP = ",";
-	private static final String SQL_CREATE_ORCHIDS_TABLE = "CREATE TABLE "
-			+ MyOrchidsTable.TABLE_NAME + " (" + MyOrchidsTable._ID
-			+ " autoincrement PRIMARY KEY,"
+	private static final String SQL_CREATE_ORCHIDS_TABLE = "CREATE TABLE IF NOT EXISTS "
+			+ MyOrchidsTable.TABLE_NAME + " ("
+			+ MyOrchidsTable.COLUMN_NAME_ORCHID_ID + " INTEGER PRIMARY KEY,"
 			+ MyOrchidsTable.COLUMN_NAME_ORCHID_NAME + TEXT_TYPE + COMMA_SEP
 			+ MyOrchidsTable.COLUMN_NAME_ORCHID_TYPE + TEXT_TYPE + COMMA_SEP
 			+ MyOrchidsTable.COLUMN_NAME_ORCHID_LAST_WATERING_DATE + TEXT_TYPE
@@ -32,13 +32,19 @@ public class DBAdapter {
 			+ MyOrchidsTable.COLUMN_NAME_ORCHID_LAST_FERTILIZING_DATE
 			+ TEXT_TYPE + COMMA_SEP
 			+ MyOrchidsTable.COLUMN_NAME_ORCHID_OUTSIDE_STATE + TEXT_TYPE
-			+ COMMA_SEP + " )";
+			+ " )";
 
 	private static final String SQL_DELETE_ORCHIDS_TABLE = "DROP TABLE IF EXISTS "
 			+ MyOrchidsTable.TABLE_NAME;
 	private final Context context;
 	private DatabaseHelper DBHelper;
 	private SQLiteDatabase db;
+	private String[] allColumns = { MyOrchidsTable.COLUMN_NAME_ORCHID_ID,
+			MyOrchidsTable.COLUMN_NAME_ORCHID_NAME,
+			MyOrchidsTable.COLUMN_NAME_ORCHID_TYPE,
+			MyOrchidsTable.COLUMN_NAME_ORCHID_LAST_WATERING_DATE,
+			MyOrchidsTable.COLUMN_NAME_ORCHID_LAST_FERTILIZING_DATE,
+			MyOrchidsTable.COLUMN_NAME_ORCHID_OUTSIDE_STATE };
 
 	public DBAdapter(Context ctx) {
 		this.context = ctx;
@@ -87,7 +93,7 @@ public class DBAdapter {
 	public long insertOrchid(String orchidName, OrchidTypes orchidType,
 			String wateredDate, String fertilizedDate) {
 		Log.d(Constants.TAG, "Inserting an orchid");
-		
+
 		ContentValues initialValues = new ContentValues();
 		initialValues.put(MyOrchidsTable.COLUMN_NAME_ORCHID_NAME, orchidName);
 		initialValues.put(MyOrchidsTable.COLUMN_NAME_ORCHID_TYPE,
@@ -103,21 +109,28 @@ public class DBAdapter {
 	// Deletes an orchid
 	public boolean deleteOrchid(long orchidId) {
 		Log.d(Constants.TAG, "Deleting an orchid");
-		return db.delete(MyOrchidsTable.TABLE_NAME, MyOrchidsTable._ID + "=" + orchidId, null) > 0;
+		return db.delete(MyOrchidsTable.TABLE_NAME,
+				MyOrchidsTable.COLUMN_NAME_ORCHID_ID + "=" + orchidId, null) > 0;
 	}
 
-	// Retrieves the names of all orchids and returns a pointer to the first entry in the resultset
-	public Cursor getOrchidsNames() {
+	// Retrieves the names of all orchids and returns a pointer to the first
+	// entry in the resultset
+	public Cursor getAllOrchids() {
 		Log.d(Constants.TAG, "Getting Orchid Names");
-		return db.query(MyOrchidsTable.TABLE_NAME, new String[] { MyOrchidsTable.COLUMN_NAME_ORCHID_NAME}, null, null, null, null, null);
+		return db.query(MyOrchidsTable.TABLE_NAME,
+				allColumns, null,
+				null, null, null, null);
 	}
 
 	// Retrieves a particular orchid
 	public Cursor getOrchidById(long orchidId) throws SQLException {
 		Log.d(Constants.TAG, "Getting an orchid by Id");
-		Cursor mCursor = db.query(true, MyOrchidsTable.TABLE_NAME, new String[] {
-				MyOrchidsTable.COLUMN_NAME_ORCHID_NAME }, MyOrchidsTable._ID
-				+ "=" + orchidId, null, null, null, null, null);
+		Cursor mCursor = db
+				.query(true,
+						MyOrchidsTable.TABLE_NAME,
+						allColumns,
+						MyOrchidsTable.COLUMN_NAME_ORCHID_ID + "=" + orchidId,
+						null, null, null, null, null);
 		if (mCursor != null) {
 			mCursor.moveToFirst();
 		}
@@ -125,16 +138,19 @@ public class DBAdapter {
 	}
 
 	// Updates an orchid
-	public boolean updateOrchid(long orchidId, String orchidName, String orchidType,
-			String wateredDate, String fertilizedDate) {
+	public boolean updateOrchid(long orchidId, String orchidName,
+			String orchidType, String wateredDate, String fertilizedDate) {
 		Log.d(Constants.TAG, "updating an orchid");
 		ContentValues args = new ContentValues();
 		args.put(MyOrchidsTable.COLUMN_NAME_ORCHID_NAME, orchidName);
 		args.put(MyOrchidsTable.COLUMN_NAME_ORCHID_TYPE, orchidType.toString());
-		args.put(MyOrchidsTable.COLUMN_NAME_ORCHID_LAST_WATERING_DATE, wateredDate);
-		args.put(MyOrchidsTable.COLUMN_NAME_ORCHID_LAST_FERTILIZING_DATE, fertilizedDate);
+		args.put(MyOrchidsTable.COLUMN_NAME_ORCHID_LAST_WATERING_DATE,
+				wateredDate);
+		args.put(MyOrchidsTable.COLUMN_NAME_ORCHID_LAST_FERTILIZING_DATE,
+				fertilizedDate);
 		args.put(MyOrchidsTable.COLUMN_NAME_ORCHID_TYPE, orchidType.toString());
 
-		return db.update(MyOrchidsTable.TABLE_NAME, args, MyOrchidsTable._ID + "=" + orchidId, null) > 0;
+		return db.update(MyOrchidsTable.TABLE_NAME, args,
+				MyOrchidsTable.COLUMN_NAME_ORCHID_ID + "=" + orchidId, null) > 0;
 	}
 }

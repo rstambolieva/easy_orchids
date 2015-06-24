@@ -16,4 +16,6 @@
         <item>Dendrobium Phaelanopsis 1</item>
         <item>Dendrobium Phaelanopsis 2</item>
     </string-array>
+    <string name="drawer_open">Open navigation drawer</string>
+	<string name="drawer_close">Close navigation drawer</string>
 </resources>
