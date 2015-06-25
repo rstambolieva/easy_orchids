@@ -72,10 +72,10 @@ public class MainActivity extends Activity {
 		// dynamically from the DB
 		for (int i = 0; i < 5; i++) {
 			if (i == 1) {
-				navDrawerItems.add(new NavigationDrawerItem(navMenuTitles[0],
+				navDrawerItems.add(new NavigationDrawerItem(navMenuTitles[i],
 						navMenuIcons.getResourceId(i, -1), true, "2"));
 			} else {
-				navDrawerItems.add(new NavigationDrawerItem(navMenuTitles[0],
+				navDrawerItems.add(new NavigationDrawerItem(navMenuTitles[i],
 						navMenuIcons.getResourceId(i, -1)));
 			}
 
