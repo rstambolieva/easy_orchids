@@ -13,7 +13,7 @@
     <array name="nav_drawer_icons">
         <item>@drawable/ic_action_new_event</item>
         <item>@drawable/ic_drawer</item>
-        <item>@drawable/ic_whats_hot</item>
+        <item>@drawable/ic_cup_water_black_24dp</item>
         <item>@drawable/perm_group_system_tools</item>
         <item>@drawable/ic_menu_help_holo_light</item>
     </array>

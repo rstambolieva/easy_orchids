@@ -1,0 +1,17 @@
+<!-- res/values/styles.xml -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- your theme inherits from the material theme -->
+    <style name="OrchidTheme" parent="android:Theme.Material.Light">
+
+        <!-- theme customizations -->
+        <item name="android:colorPrimary">@color/orchid</item>
+        <!-- darker variant for the status bar and contextual app bars -->
+        <item name="android:colorPrimaryDark">@color/dark_orchid</item>
+        <!-- theme UI controls like checkboxes and text fields -->
+        <item name="android:colorAccent">@color/accent</item>
+        <!-- text color -->
+        <item name="android:textColorPrimary">@android:color/white</item>
+    </style>
+
+</resources>
