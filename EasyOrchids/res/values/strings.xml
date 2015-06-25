@@ -1,21 +1,26 @@
 <resources>
     <string name="app_name">Easy Orchids</string>
-    <string-array name="main_menu">
+    <string-array name="navigation_drawer_menu">
         <item>Schedule</item>
         <item>My Orchids</item>
         <item>Orchid Care</item>
         <item>Settings</item>
         <item>Help &amp; Feedback</item>
     </string-array>
-    <string-array name="my_orchids">
-        <item>Phaelanopsis 1</item>
-        <item>Phaelanopsis 2</item>
-        <item>Phaelanopsis 3</item>
-        <item>Dendrobium Nobile 1</item>
-        <item>Dendrobium Nobile 2</item>
-        <item>Dendrobium Phaelanopsis 1</item>
-        <item>Dendrobium Phaelanopsis 2</item>
-    </string-array>
+    
+    <!-- Nav Drawer List Item Icons -->
+    <!-- Keep them in order as the titles are in -->
+    <array name="nav_drawer_icons">
+        <item>@drawable/ic_action_new_event</item>
+        <item>@drawable/ic_drawer</item>
+        <item>@drawable/ic_whats_hot</item>
+        <item>@drawable/perm_group_system_tools</item>
+        <item>@drawable/ic_menu_help_holo_light</item>
+    </array>
     <string name="drawer_open">Open navigation drawer</string>
 	<string name="drawer_close">Close navigation drawer</string>
+	<string name="action_settings">Settings</string>
+	
+	<!-- Content Description for the navigation drawer list items-->
+    <string name="desc_list_item_icon">Item Icon</string>
 </resources>
