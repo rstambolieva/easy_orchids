@@ -122,26 +122,25 @@ public class NavigationDrawerListAdapter extends
 	@Override
 	public void onBindViewHolder(NavigationDrawerListAdapter.ViewHolder holder,
 			int position) {
-		if (holder.Holderid == 1) { // as the list view is going to be called
-									// after the header view so we decrement the
-									// position by 1 and pass it to the holder
-									// while setting the text and image
-			holder.drawerItemTitle.setText(navDrawerItems.get(position)
+		// The list view is called after the header view, so we decrement 1 from position
+		if (holder.Holderid == 1) {
+			
+			holder.drawerItemTitle.setText(navDrawerItems.get(position - 1)
 					.getTitle());
 			holder.drawerImage.setImageResource(navDrawerItems
-					.get(position).getIcon());
+					.get(position - 1).getIcon());
 
 			// When there is counter display it, otherwise not
-			if (navDrawerItems.get(position).getCounterVisibility()) {
+			if (navDrawerItems.get(position - 1).getCounterVisibility()) {
 				holder.myOrchidsCounterText.setText(navDrawerItems.get(
-						position).getCount());
+						position - 1).getCount());
 			} else {
 				// hide the counter view
 				holder.myOrchidsCounterText.setVisibility(View.GONE);
 			}
 
 		} else {
-
+			// The positioning is OK
 			holder.drawerHeaderText.setText(navDrawerItems.get(position)
 					.getHeaderText());
 		}
@@ -150,14 +149,11 @@ public class NavigationDrawerListAdapter extends
 	// This method returns the number of items present in the list
 	@Override
 	public int getItemCount() {
-		return navDrawerItems.size(); // the number of items in the list
-											// will be
-											// +1 the titles including the
-											// header
-											// view.
+		// The number of items in the list will be +1 for the titles + the header view
+		return navDrawerItems.size() + 1; 
 	}
 
-	// Witht the following method we check what type of view is being passed
+	// With the following method we check what type of view is being passed
 	@Override
 	public int getItemViewType(int position) {
 		if (isPositionHeader(position))
