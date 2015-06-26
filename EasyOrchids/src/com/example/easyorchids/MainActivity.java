@@ -2,39 +2,45 @@ package com.example.easyorchids;
 
 import java.util.ArrayList;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
 /**
  * 
- * Creates the Navigation drawer and its callbacks
+ * Creates the AppBar and Navigation drawer and its callbacks
  *
  */
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
+	private Toolbar toolbar;
 
-	private DrawerLayout mDrawerLayout;
-	private ListView mDrawerList;
+	// Recycler view and drawer toggle
+	RecyclerView mRecyclerView;
+	RecyclerView.Adapter mAdapter;
+	RecyclerView.LayoutManager mLayoutManager;
+	DrawerLayout Drawer;
 
-	// Navigation Drawer Actionbar toogle button
-	@SuppressWarnings("deprecation")
-	private ActionBarDrawerToggle mDrawerToggle;
+	ActionBarDrawerToggle mDrawerToggle;
+
+	// Navigation drawer
+	// private ListView mDrawerList;
 
 	// Navigation drawer title
 	private CharSequence mDrawerTitle;
 
 	// Used to store app title
 	private CharSequence mTitle;
+	
+	// Header Title
+	private String  headerText;
 
 	// Navigation Drawer Slide menu items
 	private String[] navMenuTitles;
@@ -48,14 +54,21 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		// = getResources().getStringArray(R.array.navigation_drawer_menu);
-
-		// Navigation drawer layout
-		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-		mDrawerList = (ListView) findViewById(R.id.left_drawer);
-
 		// Set the Navigation Drawer title
 		mTitle = mDrawerTitle = getTitle();
+
+		// Attaching the layout to the toolbar
+		toolbar = (Toolbar) findViewById(R.id.tool_bar);
+		
+		// Setting toolbar as the ActionBar with
+		// setSupportActionBar() call object
+		setSupportActionBar(toolbar); 
+
+		mRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView);
+
+		mRecyclerView.setHasFixedSize(true); // Letting the system know that the
+												// list objects are of fixed
+												// size
 
 		// Navigation Drawer icons from resources
 		navMenuIcons = getResources()
@@ -67,16 +80,18 @@ public class MainActivity extends Activity {
 		// Load the Navigation Menu items from the string array
 		navMenuTitles = getResources().getStringArray(
 				R.array.navigation_drawer_menu);
+	
+		// Load the 
 
 		// Populate the Navigation Menu items. TODO: get the count of orchid
 		// dynamically from the DB
 		for (int i = 0; i < 5; i++) {
 			if (i == 1) {
 				navDrawerItems.add(new NavigationDrawerItem(navMenuTitles[i],
-						navMenuIcons.getResourceId(i, -1), true, "2"));
+						navMenuIcons.getResourceId(i, -1), true, "2", headerText));
 			} else {
 				navDrawerItems.add(new NavigationDrawerItem(navMenuTitles[i],
-						navMenuIcons.getResourceId(i, -1)));
+						navMenuIcons.getResourceId(i, -1), headerText));
 			}
 
 		}
@@ -84,48 +99,43 @@ public class MainActivity extends Activity {
 		// Recycle the icons
 		navMenuIcons.recycle();
 
-		// setting the nav drawer list adapter
-		adapter = new NavigationDrawerListAdapter(getApplicationContext(),
+		// setting the nav drawer list adapter, need to add header
+		mAdapter = new NavigationDrawerListAdapter(
 				navDrawerItems);
-		mDrawerList.setAdapter(adapter);
 
-		// Enabling action bar app icon and behaving it as toggle button
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-		getActionBar().setHomeButtonEnabled(true);
+		mRecyclerView.setAdapter(mAdapter);
+		mLayoutManager = new LinearLayoutManager(this); 
 
-		mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-				R.drawable.ic_menu_white, // nav menu toggle icon
-				R.string.app_name, // nav drawer open - description for
-									// accessibility
-				R.string.app_name // nav drawer close - description for
-									// accessibility
-		) {
-			public void onDrawerClosed(View view) {
-				getActionBar().setTitle(mTitle);
-				// calling onPrepareOptionsMenu() to show action bar icons
-				invalidateOptionsMenu();
-			}
+		mRecyclerView.setLayoutManager(mLayoutManager);
 
+		Drawer = (DrawerLayout) findViewById(R.id.DrawerLayout); 
+		mDrawerToggle = new ActionBarDrawerToggle(this, Drawer, toolbar,
+				R.string.drawer_open, R.string.drawer_close) {
+
+			@Override
 			public void onDrawerOpened(View drawerView) {
-				getActionBar().setTitle(mDrawerTitle);
-				// calling onPrepareOptionsMenu() to hide action bar icons
-				invalidateOptionsMenu();
+				super.onDrawerOpened(drawerView);
+				// code here will execute once the drawer is opened( As I dont
+				// want anything happened whe drawer is
+				// open I am not going to put anything here)
+//				getActionBar().setTitle(mDrawerTitle);
+//				// calling onPrepareOptionsMenu() to hide action bar icons
+//				invalidateOptionsMenu();
 			}
-		};
 
-		mDrawerLayout.setDrawerListener(mDrawerToggle);
-		mDrawerList.setOnItemClickListener(new SlideMenuClickListener());
+			@Override
+			public void onDrawerClosed(View drawerView) {
+				super.onDrawerClosed(drawerView);
+				// Code here will execute once drawer is closed
+//				getActionBar().setTitle(mTitle);
+//				// calling onPrepareOptionsMenu() to show action bar icons
+//				invalidateOptionsMenu();
+			}
 
-		if (savedInstanceState == null) {
-			// on first time display view for first nav item
-			selectItem(0);
-		}
-
-		// // Set the adapter for the list view
-		// mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-		// R.layout.drawer_list_item, navigationDrawerList));
-		// // Set the list's click listener
-		// mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+		}; // Drawer Toggle Object Made
+		Drawer.setDrawerListener(mDrawerToggle); // Drawer Listener set to the
+													// Drawer toggle
+		mDrawerToggle.syncState();
 
 	}
 
@@ -138,147 +148,16 @@ public class MainActivity extends Activity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// toggle nav drawer on selecting action bar app icon/title
-		if (mDrawerToggle.onOptionsItemSelected(item)) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
+
+		// noinspection SimplifiableIfStatement
+		if (id == R.id.action_settings) {
 			return true;
 		}
 
-		// Handle action bar actions click
-		switch (item.getItemId()) {
-		case R.id.action_settings:
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
+		return super.onOptionsItemSelected(item);
 	}
-
-	/***
-	 * Called when invalidateOptionsMenu() is triggered
-	 */
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		// if nav drawer is opened, hide the action items
-		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-		menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
-		return super.onPrepareOptionsMenu(menu);
-	}
-
-	@Override
-	public void setTitle(CharSequence title) {
-		mTitle = title;
-		getActionBar().setTitle(mTitle);
-	}
-
-	/**
-	 * When using the ActionBarDrawerToggle, you must call it during
-	 * onPostCreate() and onConfigurationChanged()...
-	 */
-
-	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-		super.onPostCreate(savedInstanceState);
-		// Sync the toggle state after onRestoreInstanceState has occurred.
-		mDrawerToggle.syncState();
-	}
-
-	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-		super.onConfigurationChanged(newConfig);
-		// Pass any configuration change to the drawer toggls
-		mDrawerToggle.onConfigurationChanged(newConfig);
-	}
-
-	/**
-	 * 
-	 * Handle navigation drawer behavior when drawer list items are clicked.
-	 * Content view is changed on each click with the respective view.
-	 *
-	 */
-	private class SlideMenuClickListener implements
-			ListView.OnItemClickListener {
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
-			// display view for selected nav drawer item
-			selectItem(position);
-		}
-
-	}
-
-	/** Swaps fragments in the main content view */
-	private void selectItem(int position) {
-		// Create a new fragment and specify the frame to be displayed
-		Fragment fragment;
-		FragmentManager fragmentManager = getFragmentManager();
-
-		switch (position) {
-		case 0:
-			// Show the selected menu drawer item
-			mDrawerList.setItemChecked(position, true);
-
-			// Create a fragment with the selected menu item and set it in the
-			// main fragment
-			fragment = new Schedule();
-			fragmentManager.beginTransaction()
-					.replace(R.id.content_frame, fragment).commit();
-
-			// Close the drawer
-			mDrawerLayout.closeDrawer(mDrawerList);
-			break;
-		case 1:
-			// Show the selected menu drawer item
-			mDrawerList.setItemChecked(position, true);
-
-			// Create a fragment with the selected menu item and set it in the
-			// main fragment
-			fragment = new MyOrchids();
-			fragmentManager.beginTransaction()
-					.replace(R.id.content_frame, fragment).commit();
-
-			// Close the drawer
-			mDrawerLayout.closeDrawer(mDrawerList);
-			break;
-		case 2:
-			// Show the selected menu drawer item
-			mDrawerList.setItemChecked(position, true);
-
-			// Create a fragment with the selected menu item and set it in the
-			// main fragment
-			fragment = new OrchidCare();
-			fragmentManager.beginTransaction()
-					.replace(R.id.content_frame, fragment).commit();
-
-			// Close the drawer
-			mDrawerLayout.closeDrawer(mDrawerList);
-			break;
-		case 3:
-			// Show the selected menu drawer item
-			mDrawerList.setItemChecked(position, true);
-
-			// Create a fragment with the selected menu item and set it in the
-			// main fragment
-			fragment = new Settings();
-			fragmentManager.beginTransaction()
-					.replace(R.id.content_frame, fragment).commit();
-
-			// Close the drawer
-			mDrawerLayout.closeDrawer(mDrawerList);
-			break;
-		case 4:
-			// Show the selected menu drawer item
-			mDrawerList.setItemChecked(position, true);
-
-			// Create a fragment with the selected menu item and set it in the
-			// main fragment
-			fragment = new HelpAndFeedback();
-			fragmentManager.beginTransaction()
-					.replace(R.id.content_frame, fragment).commit();
-
-			// Close the drawer
-			mDrawerLayout.closeDrawer(mDrawerList);
-			break;
-		}
-
-	}
-
 }

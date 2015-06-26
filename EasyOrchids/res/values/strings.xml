@@ -23,4 +23,9 @@
 	
 	<!-- Content Description for the navigation drawer list items-->
     <string name="desc_list_item_icon">Item Icon</string>
+    
+    <!-- Material Deign Strings -->
+    <string name="orchids_main">My orchids main page</string>
+    <string name="easyOrchids">Easy Orchid</string>
+
 </resources>
