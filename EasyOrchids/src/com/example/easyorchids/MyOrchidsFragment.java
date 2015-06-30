@@ -3,9 +3,9 @@ package com.example.easyorchids;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.ListFragment;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +19,7 @@ import android.widget.TextView;
  * This class represents the my orchids list view with all my orchids.
  * It populates the orchids from the DB
  */
-public class MyOrchids extends ListFragment {
+public class MyOrchidsFragment extends ListFragment {
 	public static final String ARG_MENU_ITEM_NUMBER = "menu_item_number";
 	private ListView myOrchidsList;
 	private String[] orchidsList;

@@ -1,11 +1,11 @@
 package com.example.easyorchids;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -24,24 +24,27 @@ public class NavigationDrawerListAdapter extends
 	// drawer items
 	private static final int TYPE_HEADER = 0;
 	private static final int TYPE_ITEM = 1;
-
 	// String Array to store the passed titles values from MainActivity.java
 	private String mNavTitles[];
 	// Int Array to store the passed icons resource value
 	// from MainActivity.java
 	private int mIcons[];
-	// String Resource for header View Name
-	private String headerName;
 	// String counter for the MyOrchids list
 	private String itemsCounter;
 	// Array of the drawer items to get info from
-	private ArrayList<NavigationDrawerItem> navDrawerItems;
+	private List<NavigationDrawerItem> navDrawerItems;
+	// On item selected click listener
+	private NavigationDrawerCallbacks mNavigationDrawerCallbacks;
+
+	private int mTouchedPosition = -1;
+	private int mSelectedPosition;
 
 	// Creating a ViewHolder which extends the RecyclerView View Holder
 	// ViewHolder are used to to store the inflated views in order to recycle
 	// them
 	public static class ViewHolder extends RecyclerView.ViewHolder {
-		int Holderid;
+		// 1 - item; 0- header
+		int holderId;
 
 		TextView drawerItemTitle;
 		ImageView drawerImage;
@@ -49,35 +52,24 @@ public class NavigationDrawerListAdapter extends
 		TextView myOrchidsCounterText;
 
 		// Creating ViewHolder Constructor with View and viewType As a parameter
-		public ViewHolder(View itemView, int ViewType) {
+		public ViewHolder(View itemView, int viewType) {
 			super(itemView);
 
-			// Here we set the appropriate view in accordance with the the view
-			// type as passed when the holder object is created
-			if (ViewType == TYPE_ITEM) {
+			if (viewType == TYPE_ITEM) {
 				// Populate the layouts for the drawer item fields
 				drawerItemTitle = (TextView) itemView.findViewById(R.id.title);
 				drawerImage = (ImageView) itemView.findViewById(R.id.icon);
 				myOrchidsCounterText = (TextView) itemView
 						.findViewById(R.id.counter);
-				// setting holder id as 1 as the object being populated are of
-				// type drawer item row
-				Holderid = 1;
+				holderId = 1;
 			} else {
-				drawerHeaderText = (TextView) itemView
-						.findViewById(R.id.drawerHeaderTxt); // Creating Text
-																// View object
-																// from
-																// header.xml
-																// for name
-				Holderid = 0; // Setting holder id = 0 as the object being
-								// populated are of type header view
+				holderId = 0;
 			}
 		}
 	}
 
 	// Create custom recycler adapter for the navigation drawer constructor
-	NavigationDrawerListAdapter(ArrayList<NavigationDrawerItem> navDrawerItems) {
+	NavigationDrawerListAdapter(List<NavigationDrawerItem> navDrawerItems) {
 		this.navDrawerItems = navDrawerItems;
 	}
 
@@ -92,21 +84,55 @@ public class NavigationDrawerListAdapter extends
 	public NavigationDrawerListAdapter.ViewHolder onCreateViewHolder(
 			ViewGroup parent, int viewType) {
 
+		Context context = parent.getContext();
+
 		if (viewType == TYPE_ITEM) {
 			// Inflating the layout
-			View v = LayoutInflater.from(parent.getContext()).inflate(
+			View v = LayoutInflater.from(context).inflate(
 					R.layout.drawer_list_item, parent, false);
 			// Creating ViewHolder and passing the object of type view
-			ViewHolder vhItem = new ViewHolder(v, viewType);
+			final ViewHolder vhItem = new ViewHolder(v, viewType);
+
+			// Set touch listener to the navigation drawer item
+			vhItem.itemView.setOnTouchListener(new View.OnTouchListener() {
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+
+					switch (event.getAction()) {
+					case MotionEvent.ACTION_DOWN:
+						touchPosition(vhItem.getAdapterPosition());
+						return false;
+					case MotionEvent.ACTION_CANCEL:
+						touchPosition(-1);
+						return false;
+					case MotionEvent.ACTION_MOVE:
+						return false;
+					case MotionEvent.ACTION_UP:
+						touchPosition(-1);
+						return false;
+					}
+					return true;
+				}
+			});
+
+			// Set on click listener to the navigation drawer item
+			vhItem.itemView.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					if (mNavigationDrawerCallbacks != null)
+						mNavigationDrawerCallbacks
+								.onNavigationDrawerItemSelected(vhItem
+										.getAdapterPosition());
+				}
+			});
 
 			// Returning the created object
 			return vhItem;
 			// inflate your layout and pass it to view holder
 		} else if (viewType == TYPE_HEADER) {
-
-			View v = LayoutInflater.from(parent.getContext()).inflate(
-					R.layout.header, parent, false); // Inflating the layout
-
+			// Inflating the layout
+			View v = LayoutInflater.from(context).inflate(R.layout.header,
+					parent, false);
 			ViewHolder vhHeader = new ViewHolder(v, viewType);
 			return vhHeader; // returning the object created
 
@@ -115,42 +141,39 @@ public class NavigationDrawerListAdapter extends
 
 	}
 
-	// Called when the item in a row is displayed, here the int position
+	// Populates the item fields. Called when the item in a row is displayed,
+	// here the int position
 	// Tells us item at which position is being constructed to be displayed and
 	// the holder id of the holder object tell us
 	// which view type is being created 1 for item row
 	@Override
 	public void onBindViewHolder(NavigationDrawerListAdapter.ViewHolder holder,
 			int position) {
-		// The list view is called after the header view, so we decrement 1 from position
-		if (holder.Holderid == 1) {
-			
-			holder.drawerItemTitle.setText(navDrawerItems.get(position - 1)
+
+		if (holder.holderId == 1) {
+			holder.drawerItemTitle.setText(navDrawerItems.get(position)
 					.getTitle());
 			holder.drawerImage.setImageResource(navDrawerItems
 					.get(position - 1).getIcon());
 
 			// When there is counter display it, otherwise not
-			if (navDrawerItems.get(position - 1).getCounterVisibility()) {
-				holder.myOrchidsCounterText.setText(navDrawerItems.get(
-						position - 1).getCount());
+			if (navDrawerItems.get(position).getCounterVisibility()) {
+				holder.myOrchidsCounterText.setText(navDrawerItems
+						.get(position).getCount());
 			} else {
 				// hide the counter view
 				holder.myOrchidsCounterText.setVisibility(View.GONE);
 			}
-
 		} else {
-			// The positioning is OK
-			holder.drawerHeaderText.setText(navDrawerItems.get(position)
-					.getHeaderText());
+			// nothing to set for the header
 		}
+
 	}
 
 	// This method returns the number of items present in the list
 	@Override
 	public int getItemCount() {
-		// The number of items in the list will be +1 for the titles + the header view
-		return navDrawerItems.size() + 1; 
+		return navDrawerItems.size();
 	}
 
 	// With the following method we check what type of view is being passed
@@ -170,5 +193,55 @@ public class NavigationDrawerListAdapter extends
 	// public long getItemId(int position) {
 	// return position;
 	// }
+
+	// Now this goes in Main Menu /** Swaps fragments in the main content view
+	// */
+	// private void selectItem(int position) {
+	// // Create a new fragment and specify the frame to be displayed
+	//
+	// switch (position) {
+	// case 0:
+	//
+	// break;
+	// case 1:
+	//
+	// break;
+	// case 2:
+	//
+	// break;
+	// case 3:
+	//
+	// break;
+	// case 4:
+	//
+	// break;
+	// }
+	//
+	// }
+	//
+	private void touchPosition(int position) {
+		int lastPosition = mTouchedPosition;
+		mTouchedPosition = position;
+		if (lastPosition >= 0)
+			notifyItemChanged(lastPosition);
+		if (position >= 0)
+			notifyItemChanged(position);
+	}
+
+	public void selectPosition(int position) {
+		int lastPosition = mSelectedPosition;
+		mSelectedPosition = position;
+		notifyItemChanged(lastPosition);
+		notifyItemChanged(position);
+	}
+
+	public NavigationDrawerCallbacks getNavigationDrawerCallbacks() {
+		return mNavigationDrawerCallbacks;
+	}
+
+	public void setNavigationDrawerCallbacks(
+			NavigationDrawerCallbacks navigationDrawerCallbacks) {
+		mNavigationDrawerCallbacks = navigationDrawerCallbacks;
+	}
 
 }
