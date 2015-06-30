@@ -1,6 +1,5 @@
 package com.example.easyorchids;
 
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -21,8 +20,8 @@ public class HelpAndFeedbackFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
-		View rootView = inflater.inflate(R.layout.schedule_view, container,
-				false);
+		View rootView = inflater.inflate(R.layout.help_feedback_view,
+				container, false);
 
 		return rootView;
 	}

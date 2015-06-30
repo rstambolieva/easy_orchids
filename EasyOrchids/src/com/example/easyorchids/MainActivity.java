@@ -6,8 +6,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
-import android.widget.ListView;
 
 /**
  * 
@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements
 				.findFragmentById(R.id.left_drawer);
 		// Drawer Layout id in activity_main.xml
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
-		
+
 		mNavigationDrawerFragment.setup(R.id.left_drawer, mDrawerLayout,
 				mToolbar);
 	}
@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements
 
 	/** Swaps fragments in the main content view */
 	private void selectItem(int position) {
+		Log.d(Constants.TAG, "Selecting item from Main Activity");
 		// Create a new fragment and specify the frame to be displayed
 		Fragment fragment = null;
 		FragmentManager fragmentManager = getSupportFragmentManager();
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements
 			fragment = new HelpAndFeedbackFragment();
 			break;
 		}
-		
+
 		// Swap the fragment
 		if (fragment != null) {
 			fragmentManager.beginTransaction()

@@ -35,7 +35,7 @@
     </LinearLayout>
     <FrameLayout
         android:id="@+id/scrimInsetsFrameLayout"
-        android:layout_width="230dp"
+        android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
         android:layout_gravity="start"
@@ -46,7 +46,7 @@
         <fragment
 	        android:id="@+id/left_drawer"
 	        android:name="com.example.easyorchids.NavigationDrawerFragment"
-	        android:layout_width="240dp"
+	        android:layout_width="320dp"
 	        android:layout_height="match_parent"
 	        android:layout_gravity="start"
 	        android:choiceMode="singleChoice"

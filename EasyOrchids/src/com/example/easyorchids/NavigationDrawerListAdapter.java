@@ -122,7 +122,7 @@ public class NavigationDrawerListAdapter extends
 					if (mNavigationDrawerCallbacks != null)
 						mNavigationDrawerCallbacks
 								.onNavigationDrawerItemSelected(vhItem
-										.getAdapterPosition());
+										.getAdapterPosition() - 1);
 				}
 			});
 
@@ -158,8 +158,8 @@ public class NavigationDrawerListAdapter extends
 
 			// When there is counter display it, otherwise not
 			if (navDrawerItems.get(position - 1).getCounterVisibility()) {
-				holder.myOrchidsCounterText.setText(navDrawerItems
-						.get(position - 1).getCount());
+				holder.myOrchidsCounterText.setText(navDrawerItems.get(
+						position - 1).getCount());
 			} else {
 				// hide the counter view
 				holder.myOrchidsCounterText.setVisibility(View.GONE);
