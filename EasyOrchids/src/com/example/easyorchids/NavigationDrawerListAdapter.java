@@ -151,15 +151,15 @@ public class NavigationDrawerListAdapter extends
 			int position) {
 
 		if (holder.holderId == 1) {
-			holder.drawerItemTitle.setText(navDrawerItems.get(position)
+			holder.drawerItemTitle.setText(navDrawerItems.get(position - 1)
 					.getTitle());
 			holder.drawerImage.setImageResource(navDrawerItems
 					.get(position - 1).getIcon());
 
 			// When there is counter display it, otherwise not
-			if (navDrawerItems.get(position).getCounterVisibility()) {
+			if (navDrawerItems.get(position - 1).getCounterVisibility()) {
 				holder.myOrchidsCounterText.setText(navDrawerItems
-						.get(position).getCount());
+						.get(position - 1).getCount());
 			} else {
 				// hide the counter view
 				holder.myOrchidsCounterText.setVisibility(View.GONE);
@@ -173,7 +173,7 @@ public class NavigationDrawerListAdapter extends
 	// This method returns the number of items present in the list
 	@Override
 	public int getItemCount() {
-		return navDrawerItems.size();
+		return navDrawerItems.size() + 1;
 	}
 
 	// With the following method we check what type of view is being passed
@@ -189,36 +189,6 @@ public class NavigationDrawerListAdapter extends
 		return position == 0;
 	}
 
-	// @Override
-	// public long getItemId(int position) {
-	// return position;
-	// }
-
-	// Now this goes in Main Menu /** Swaps fragments in the main content view
-	// */
-	// private void selectItem(int position) {
-	// // Create a new fragment and specify the frame to be displayed
-	//
-	// switch (position) {
-	// case 0:
-	//
-	// break;
-	// case 1:
-	//
-	// break;
-	// case 2:
-	//
-	// break;
-	// case 3:
-	//
-	// break;
-	// case 4:
-	//
-	// break;
-	// }
-	//
-	// }
-	//
 	private void touchPosition(int position) {
 		int lastPosition = mTouchedPosition;
 		mTouchedPosition = position;
@@ -229,10 +199,12 @@ public class NavigationDrawerListAdapter extends
 	}
 
 	public void selectPosition(int position) {
-		int lastPosition = mSelectedPosition;
-		mSelectedPosition = position;
-		notifyItemChanged(lastPosition);
-		notifyItemChanged(position);
+		if (position != 0) {
+			int lastPosition = mSelectedPosition;
+			mSelectedPosition = position;
+			notifyItemChanged(lastPosition);
+			notifyItemChanged(position);
+		}
 	}
 
 	public NavigationDrawerCallbacks getNavigationDrawerCallbacks() {
