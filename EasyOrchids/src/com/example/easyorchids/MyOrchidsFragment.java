@@ -143,15 +143,20 @@ public class MyOrchidsFragment extends ListFragment {
 
 	// Convert from cursor object to Orchid Object and populate orchid fields
 	// Return the resulting orchid object.
+	// Test is here sql injection is possible. What checks should I do.
 	private Orchid cursorToOrchid(Cursor c) {
 		Orchid orchid = new Orchid();
 		orchid.setId(c.getLong(0));
 		orchid.setOrchidName(c.getString(1));
 		orchid.setLastWatering(c.getString(2));
 		orchid.setLastFertilizing(c.getString(3));
+		if (checkInputValidity(c)) {
+			orchid.setIsOutside(c.getString(4));
+		} else
+			throw new Error("Wrong input in orchid outside state");
+
 		orchid.setIsOutside(c.getString(4));
-		orchid.setDayTemp(c.getString(5));
-		orchid.setNightTemp(c.getString(6));
+		orchid.setPicturePath(c.getString(5));
 		// release cursor resources, not sure if this should go here
 		// c.close();
 		return orchid;
@@ -169,6 +174,23 @@ public class MyOrchidsFragment extends ListFragment {
 		// release cursor resources, not sure if this should go here
 		// c.close();
 		return orchids;
+	}
+
+	/**
+	 * 
+	 * @return true if input is valid, false otherwise
+	 */
+	private boolean checkInputValidity(Cursor c) {
+		boolean result = false;
+		if (c.getString(4) != null) {
+			if (c.getString(4).toLowerCase().equals(YesNoEnum.YES.toString())
+					|| c.getString(4).toLowerCase()
+							.equals(YesNoEnum.NO.toString())) {
+				return true;
+			}
+		}
+
+		return result;
 	}
 
 }

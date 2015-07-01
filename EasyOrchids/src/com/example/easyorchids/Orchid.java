@@ -13,17 +13,9 @@ public class Orchid {
 	private String orchidName;
 	private String lastWatering;
 	private String lastFertilizing;
+	// expected values "yes", "no"
 	private String isOutside;
-	private String dayTemp;
-	private String nightTemp;
-
-	public String getNightTemp() {
-		return nightTemp;
-	}
-
-	public void setNightTemp(String nightTemp) {
-		this.nightTemp = nightTemp;
-	}
+	private String picturePath;
 
 	// Getters and Setters
 	public long getId() {
@@ -71,12 +63,12 @@ public class Orchid {
 		}
 	}
 
-	public String getDayTemp() {
-		return dayTemp;
+	public String getPicturePath() {
+		return picturePath;
 	}
 
-	public void setDayTemp(String dayTemp) {
-		this.dayTemp = dayTemp;
+	public void setPicturePath(String picturePath) {
+		this.picturePath = picturePath;
 	}
 
 	// To be used in the array adapter in the listview

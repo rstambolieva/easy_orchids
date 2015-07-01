@@ -27,7 +27,6 @@ public final class MyOrchidsContract {
 		public static final String COLUMN_NAME_ORCHID_LAST_WATERING_DATE = "last_watering";
 		public static final String COLUMN_NAME_ORCHID_LAST_FERTILIZING_DATE = "last_fertilizing";
 		public static final String COLUMN_NAME_ORCHID_OUTSIDE_STATE = "is_outside";
-		public static final String COLUMN_NAME_DAY_TEMP = "day_temp";
-		public static final String COLUMN_NAME_NIGHT_TEMP = "night_temp";
+		public static final String PICTURE_PATH = "picture_path";
 	}
 }

@@ -1,10 +1,16 @@
 package com.example.easyorchids;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
@@ -17,8 +23,10 @@ import com.example.easyorchids.MyOrchidsContract.MyOrchidsTable;
  *
  */
 public class DBAdapter {
+	// Path to the place where the DB will be copied on the android device
+	private static String DB_PATH = "/data/data/com.example.easyorchids/databases/";
 	private static final String TAG_DB = "DBAdapter";
-	private static final String DATABASE_NAME = "OrchidsDB";
+	private static final String DATABASE_NAME = "easy_orchids.db";
 	private static final int DATABASE_VERSION = 1;
 	private static final String TEXT_TYPE = " TEXT";
 	private static final String COMMA_SEP = ",";
@@ -41,27 +49,22 @@ public class DBAdapter {
 			+ COMMA_SEP
 			+ MyOrchidsTable.COLUMN_NAME_ORCHID_OUTSIDE_STATE
 			+ TEXT_TYPE
-			+ COMMA_SEP
-			+ MyOrchidsTable.COLUMN_NAME_DAY_TEMP
-			+ TEXT_TYPE
-			+ COMMA_SEP
-			+ MyOrchidsTable.COLUMN_NAME_NIGHT_TEMP
-			+ TEXT_TYPE
-			+ ")";
+			+ COMMA_SEP + MyOrchidsTable.PICTURE_PATH + TEXT_TYPE + ")";
 
 	private static final String SQL_DELETE_ORCHIDS_TABLE = "DROP TABLE IF EXISTS "
 			+ MyOrchidsTable.TABLE_NAME;
-	private final Context context;
+	// static to be accessed by the inner class
+	private static Context context;
 	private DatabaseHelper DBHelper;
-	private SQLiteDatabase db;
+	// static to be accessed by the inner class
+	private static SQLiteDatabase db;
 	private String[] allColumns = { MyOrchidsTable.COLUMN_NAME_ORCHID_ID,
 			MyOrchidsTable.COLUMN_NAME_ORCHID_NAME,
 			MyOrchidsTable.COLUMN_NAME_ORCHID_TYPE,
 			MyOrchidsTable.COLUMN_NAME_ORCHID_LAST_WATERING_DATE,
 			MyOrchidsTable.COLUMN_NAME_ORCHID_LAST_FERTILIZING_DATE,
 			MyOrchidsTable.COLUMN_NAME_ORCHID_OUTSIDE_STATE,
-			MyOrchidsTable.COLUMN_NAME_DAY_TEMP,
-			MyOrchidsTable.COLUMN_NAME_NIGHT_TEMP };
+			MyOrchidsTable.PICTURE_PATH };
 
 	public DBAdapter(Context ctx) {
 		this.context = ctx;
@@ -76,6 +79,104 @@ public class DBAdapter {
 	private static class DatabaseHelper extends SQLiteOpenHelper {
 		DatabaseHelper(Context context) {
 			super(context, DATABASE_NAME, null, DATABASE_VERSION);
+		}
+
+		/**
+		 * Creates a empty database on the system and rewrites it with your own
+		 * database.
+		 * */
+		public void createDataBase() throws IOException {
+
+			boolean dbExist = checkDataBase();
+
+			if (dbExist) {
+				// do nothing - database already exist
+			} else {
+
+				// By calling this method and empty database will be created
+				// into the default system path
+				// of your application so we are gonna be able to overwrite that
+				// database with our database.
+				this.getReadableDatabase();
+
+				try {
+
+					copyDataBase();
+
+				} catch (IOException e) {
+
+					throw new Error("Error copying database");
+
+				}
+			}
+
+		}
+
+		/**
+		 * Check if the database exisst to avoid re-copying the file each time
+		 * you open the application.
+		 * 
+		 * @return true if it exists, false if it doesn't
+		 */
+		private boolean checkDataBase() {
+
+			SQLiteDatabase checkDB = null;
+			try {
+				String myPath = DB_PATH + DATABASE_NAME;
+				checkDB = SQLiteDatabase.openDatabase(myPath, null,
+						SQLiteDatabase.OPEN_READONLY);
+
+			} catch (SQLiteException e) {
+				// database does't exist yet.
+				Log.d(Constants.TAG,
+						"Myorchids DB doesn't exist. We must create it.");
+			}
+
+			if (checkDB != null) {
+				checkDB.close();
+			}
+
+			return checkDB != null ? true : false;
+		}
+
+		/**
+		 * Copies your database from your local assets-folder to the just
+		 * created empty database in the system folder, from where it can be
+		 * accessed and handled. This is done by transferring bytestream.
+		 * */
+		private void copyDataBase() throws IOException {
+
+			// Open your local db as the input stream
+			InputStream myInput = context.getAssets().open(DATABASE_NAME);
+
+			// Path to the just created empty db
+			String outFileName = DB_PATH + DATABASE_NAME;
+
+			// Open the empty db as the output stream
+			OutputStream myOutput = new FileOutputStream(outFileName);
+
+			// transfer bytes from the inputfile to the outputfile
+			byte[] buffer = new byte[1024];
+			int length;
+			while ((length = myInput.read(buffer)) > 0) {
+				myOutput.write(buffer, 0, length);
+			}
+
+			// Close the streams
+			myOutput.flush();
+			myOutput.close();
+			myInput.close();
+
+		}
+
+		@Override
+		public synchronized void close() {
+
+			if (db != null)
+				db.close();
+
+			super.close();
+
 		}
 
 		@Override
@@ -115,7 +216,7 @@ public class DBAdapter {
 	// Inserts an orchid into the database
 	public long insertOrchid(String orchidName, OrchidTypes orchidType,
 			String wateredDate, String fertilizedDate, String outsideState,
-			String dayTemp, String nightTemp) {
+			String dayTemp, String nightTemp, String picturePath) {
 		Log.d(Constants.TAG, "Inserting an orchid");
 
 		ContentValues initialValues = new ContentValues();
@@ -129,8 +230,7 @@ public class DBAdapter {
 				fertilizedDate);
 		initialValues.put(MyOrchidsTable.COLUMN_NAME_ORCHID_OUTSIDE_STATE,
 				outsideState);
-		initialValues.put(MyOrchidsTable.COLUMN_NAME_DAY_TEMP, dayTemp);
-		initialValues.put(MyOrchidsTable.COLUMN_NAME_NIGHT_TEMP, nightTemp);
+		initialValues.put(MyOrchidsTable.PICTURE_PATH, picturePath);
 		return db.insert(MyOrchidsTable.TABLE_NAME, null, initialValues);
 	}
 
@@ -164,7 +264,8 @@ public class DBAdapter {
 	// Updates an orchid
 	public boolean updateOrchid(long orchidId, String orchidName,
 			String orchidType, String wateredDate, String fertilizedDate,
-			String outsideState, String dayTemp, String nightTemp) {
+			String outsideState, String dayTemp, String nightTemp,
+			String picturePath) {
 		Log.d(Constants.TAG, "updating an orchid");
 		ContentValues args = new ContentValues();
 		args.put(MyOrchidsTable.COLUMN_NAME_ORCHID_NAME, orchidName);
@@ -175,10 +276,11 @@ public class DBAdapter {
 				fertilizedDate);
 		args.put(MyOrchidsTable.COLUMN_NAME_ORCHID_OUTSIDE_STATE,
 				outsideState.toString());
-		args.put(MyOrchidsTable.COLUMN_NAME_DAY_TEMP, dayTemp.toString());
-		args.put(MyOrchidsTable.COLUMN_NAME_NIGHT_TEMP, nightTemp.toString());
+
+		args.put(MyOrchidsTable.PICTURE_PATH, picturePath.toString());
 
 		return db.update(MyOrchidsTable.TABLE_NAME, args,
 				MyOrchidsTable.COLUMN_NAME_ORCHID_ID + "=" + orchidId, null) > 0;
 	}
+
 }
