@@ -1,7 +1,5 @@
 package com.example.easyorchids;
 
-import com.example.easyorchids.MyOrchidsContract.MyOrchidsTable;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -9,6 +7,8 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import com.example.easyorchids.MyOrchidsContract.MyOrchidsTable;
 
 /**
  * 
@@ -23,16 +23,31 @@ public class DBAdapter {
 	private static final String TEXT_TYPE = " TEXT";
 	private static final String COMMA_SEP = ",";
 	private static final String SQL_CREATE_ORCHIDS_TABLE = "CREATE TABLE IF NOT EXISTS "
-			+ MyOrchidsTable.TABLE_NAME + " ("
-			+ MyOrchidsTable.COLUMN_NAME_ORCHID_ID + " INTEGER PRIMARY KEY,"
-			+ MyOrchidsTable.COLUMN_NAME_ORCHID_NAME + TEXT_TYPE + COMMA_SEP
-			+ MyOrchidsTable.COLUMN_NAME_ORCHID_TYPE + TEXT_TYPE + COMMA_SEP
-			+ MyOrchidsTable.COLUMN_NAME_ORCHID_LAST_WATERING_DATE + TEXT_TYPE
+			+ MyOrchidsTable.TABLE_NAME
+			+ " ("
+			+ MyOrchidsTable.COLUMN_NAME_ORCHID_ID
+			+ " INTEGER PRIMARY KEY,"
+			+ MyOrchidsTable.COLUMN_NAME_ORCHID_NAME
+			+ TEXT_TYPE
+			+ COMMA_SEP
+			+ MyOrchidsTable.COLUMN_NAME_ORCHID_TYPE
+			+ TEXT_TYPE
+			+ COMMA_SEP
+			+ MyOrchidsTable.COLUMN_NAME_ORCHID_LAST_WATERING_DATE
+			+ TEXT_TYPE
 			+ COMMA_SEP
 			+ MyOrchidsTable.COLUMN_NAME_ORCHID_LAST_FERTILIZING_DATE
-			+ TEXT_TYPE + COMMA_SEP
-			+ MyOrchidsTable.COLUMN_NAME_ORCHID_OUTSIDE_STATE + TEXT_TYPE
-			+ " )";
+			+ TEXT_TYPE
+			+ COMMA_SEP
+			+ MyOrchidsTable.COLUMN_NAME_ORCHID_OUTSIDE_STATE
+			+ TEXT_TYPE
+			+ COMMA_SEP
+			+ MyOrchidsTable.COLUMN_NAME_DAY_TEMP
+			+ TEXT_TYPE
+			+ COMMA_SEP
+			+ MyOrchidsTable.COLUMN_NAME_NIGHT_TEMP
+			+ TEXT_TYPE
+			+ ")";
 
 	private static final String SQL_DELETE_ORCHIDS_TABLE = "DROP TABLE IF EXISTS "
 			+ MyOrchidsTable.TABLE_NAME;
@@ -44,7 +59,9 @@ public class DBAdapter {
 			MyOrchidsTable.COLUMN_NAME_ORCHID_TYPE,
 			MyOrchidsTable.COLUMN_NAME_ORCHID_LAST_WATERING_DATE,
 			MyOrchidsTable.COLUMN_NAME_ORCHID_LAST_FERTILIZING_DATE,
-			MyOrchidsTable.COLUMN_NAME_ORCHID_OUTSIDE_STATE };
+			MyOrchidsTable.COLUMN_NAME_ORCHID_OUTSIDE_STATE,
+			MyOrchidsTable.COLUMN_NAME_DAY_TEMP,
+			MyOrchidsTable.COLUMN_NAME_NIGHT_TEMP };
 
 	public DBAdapter(Context ctx) {
 		this.context = ctx;
@@ -76,6 +93,12 @@ public class DBAdapter {
 		}
 	}
 
+	// Drop the DB
+	public void dropOrchidsTable() {
+		Log.d(Constants.TAG, "Dropping the orchids table");
+		db.execSQL(SQL_DELETE_ORCHIDS_TABLE);
+	}
+
 	// Оpens the database
 	public DBAdapter open() throws SQLException {
 		Log.d(Constants.TAG, "Opening DB");
@@ -91,7 +114,8 @@ public class DBAdapter {
 
 	// Inserts an orchid into the database
 	public long insertOrchid(String orchidName, OrchidTypes orchidType,
-			String wateredDate, String fertilizedDate) {
+			String wateredDate, String fertilizedDate, String outsideState,
+			String dayTemp, String nightTemp) {
 		Log.d(Constants.TAG, "Inserting an orchid");
 
 		ContentValues initialValues = new ContentValues();
@@ -103,6 +127,10 @@ public class DBAdapter {
 		initialValues.put(
 				MyOrchidsTable.COLUMN_NAME_ORCHID_LAST_FERTILIZING_DATE,
 				fertilizedDate);
+		initialValues.put(MyOrchidsTable.COLUMN_NAME_ORCHID_OUTSIDE_STATE,
+				outsideState);
+		initialValues.put(MyOrchidsTable.COLUMN_NAME_DAY_TEMP, dayTemp);
+		initialValues.put(MyOrchidsTable.COLUMN_NAME_NIGHT_TEMP, nightTemp);
 		return db.insert(MyOrchidsTable.TABLE_NAME, null, initialValues);
 	}
 
@@ -117,20 +145,16 @@ public class DBAdapter {
 	// entry in the resultset
 	public Cursor getAllOrchids() {
 		Log.d(Constants.TAG, "Getting Orchid Names");
-		return db.query(MyOrchidsTable.TABLE_NAME,
-				allColumns, null,
-				null, null, null, null);
+		return db.query(MyOrchidsTable.TABLE_NAME, allColumns, null, null,
+				null, null, null);
 	}
 
 	// Retrieves a particular orchid
 	public Cursor getOrchidById(long orchidId) throws SQLException {
 		Log.d(Constants.TAG, "Getting an orchid by Id");
-		Cursor mCursor = db
-				.query(true,
-						MyOrchidsTable.TABLE_NAME,
-						allColumns,
-						MyOrchidsTable.COLUMN_NAME_ORCHID_ID + "=" + orchidId,
-						null, null, null, null, null);
+		Cursor mCursor = db.query(true, MyOrchidsTable.TABLE_NAME, allColumns,
+				MyOrchidsTable.COLUMN_NAME_ORCHID_ID + "=" + orchidId, null,
+				null, null, null, null);
 		if (mCursor != null) {
 			mCursor.moveToFirst();
 		}
@@ -139,7 +163,8 @@ public class DBAdapter {
 
 	// Updates an orchid
 	public boolean updateOrchid(long orchidId, String orchidName,
-			String orchidType, String wateredDate, String fertilizedDate) {
+			String orchidType, String wateredDate, String fertilizedDate,
+			String outsideState, String dayTemp, String nightTemp) {
 		Log.d(Constants.TAG, "updating an orchid");
 		ContentValues args = new ContentValues();
 		args.put(MyOrchidsTable.COLUMN_NAME_ORCHID_NAME, orchidName);
@@ -148,7 +173,10 @@ public class DBAdapter {
 				wateredDate);
 		args.put(MyOrchidsTable.COLUMN_NAME_ORCHID_LAST_FERTILIZING_DATE,
 				fertilizedDate);
-		args.put(MyOrchidsTable.COLUMN_NAME_ORCHID_TYPE, orchidType.toString());
+		args.put(MyOrchidsTable.COLUMN_NAME_ORCHID_OUTSIDE_STATE,
+				outsideState.toString());
+		args.put(MyOrchidsTable.COLUMN_NAME_DAY_TEMP, dayTemp.toString());
+		args.put(MyOrchidsTable.COLUMN_NAME_NIGHT_TEMP, nightTemp.toString());
 
 		return db.update(MyOrchidsTable.TABLE_NAME, args,
 				MyOrchidsTable.COLUMN_NAME_ORCHID_ID + "=" + orchidId, null) > 0;

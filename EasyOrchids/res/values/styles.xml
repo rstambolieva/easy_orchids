@@ -6,6 +6,8 @@
     <style name="OrchidTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/orchid</item>
         <item name="colorPrimaryDark">@color/dark_orchid</item>
+        <!-- used for the drawer ripple effect -->
+        <item name="android:colorControlHighlight">@color/colorHighLight</item>
         <!-- Customize your theme here. -->
     </style>
 

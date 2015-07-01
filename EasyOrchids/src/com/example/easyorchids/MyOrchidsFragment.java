@@ -6,7 +6,6 @@ import java.util.List;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,17 +49,22 @@ public class MyOrchidsFragment extends ListFragment {
 		DBAdapter dbAdapter = new DBAdapter(getActivity());
 
 		// Open the DB for writing
-		Log.d(Constants.TAG, "Opening DB");
-		dbAdapter.open();
+		// dbAdapter.open();
+		// dbAdapter.dropOrchidsTable();
+		// getActivity().deleteDatabase(
+		// MyOrchidsContract.MyOrchidsTable.TABLE_NAME);
 
-		// Remove elements insertion from here//////////////////////////////////
-		long id;
-
-		Log.d(Constants.TAG, "Inserting orchids");
-		id = dbAdapter.insertOrchid("Pah 1", OrchidTypes.PHAELANOPSIS, "1 Sep",
-				"1 Sep");
-		id = dbAdapter.insertOrchid("Pah 2", OrchidTypes.PHAELANOPSIS, "1 Sep",
-				"1 Sep");
+		// // Remove elements insertion from
+		// here//////////////////////////////////
+		// long id;
+		//
+		// Log.d(Constants.TAG, "Inserting orchids");
+		// id = dbAdapter.insertOrchid("Pah 1", OrchidTypes.PHAELANOPSIS,
+		// "1 Sep",
+		// "1 Sep");
+		// id = dbAdapter.insertOrchid("Pah 2", OrchidTypes.PHAELANOPSIS,
+		// "1 Sep",
+		// "1 Sep");
 
 		// Remove elements insertion from here/////////////////////////////////
 
@@ -74,26 +78,32 @@ public class MyOrchidsFragment extends ListFragment {
 		// TODO: Apply the ViewHolder Pattern for better performance of the list
 
 		ArrayAdapter<Orchid> adapter = new ArrayAdapter<Orchid>(getActivity(),
-				R.layout.myorchid_list_item, R.id.orchid_name, allOrchids){
-			
-			// Override the getView method to make the transition from Obj to View item
-			 @Override
-			    public View getView(int position, View convertView, ViewGroup parent) {
-			       // Get the data item for this position
-			       Orchid orchid = getItem(position);    
-			       // Check if an existing view is being reused, otherwise inflate the view
-			       if (convertView == null) {
-			          convertView = LayoutInflater.from(getContext()).inflate(R.layout.myorchid_list_item, parent, false);
-			       }
-			       // Lookup view for data population
-			       TextView orchidName = (TextView) convertView.findViewById(R.id.orchid_name);
-			       ImageView imageView = (ImageView) convertView.findViewById(R.id.orchid_img);
-			       // Populate the data into the template view using the data object
-			       orchidName.setText(orchid.getOrchidName());
+				R.layout.myorchid_list_item, R.id.orchid_name, allOrchids) {
 
-			       // Return the completed view to render on screen
-			       return convertView;
-			   }
+			// Override the getView method to make the transition from Obj to
+			// View item
+			@Override
+			public View getView(int position, View convertView, ViewGroup parent) {
+				// Get the data item for this position
+				Orchid orchid = getItem(position);
+				// Check if an existing view is being reused, otherwise inflate
+				// the view
+				if (convertView == null) {
+					convertView = LayoutInflater.from(getContext()).inflate(
+							R.layout.myorchid_list_item, parent, false);
+				}
+				// Lookup view for data population
+				TextView orchidName = (TextView) convertView
+						.findViewById(R.id.orchid_name);
+				ImageView imageView = (ImageView) convertView
+						.findViewById(R.id.orchid_img);
+				// Populate the data into the template view using the data
+				// object
+				orchidName.setText(orchid.getOrchidName());
+
+				// Return the completed view to render on screen
+				return convertView;
+			}
 		};
 
 		setListAdapter(adapter);
@@ -140,8 +150,10 @@ public class MyOrchidsFragment extends ListFragment {
 		orchid.setLastWatering(c.getString(2));
 		orchid.setLastFertilizing(c.getString(3));
 		orchid.setIsOutside(c.getString(4));
+		orchid.setDayTemp(c.getString(5));
+		orchid.setNightTemp(c.getString(6));
 		// release cursor resources, not sure if this should go here
-//		c.close();
+		// c.close();
 		return orchid;
 	}
 
@@ -155,7 +167,7 @@ public class MyOrchidsFragment extends ListFragment {
 			c.moveToNext();
 		}
 		// release cursor resources, not sure if this should go here
-//		c.close();
+		// c.close();
 		return orchids;
 	}
 

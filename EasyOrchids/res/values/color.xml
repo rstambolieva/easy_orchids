@@ -12,5 +12,7 @@
 
     <color name="orchid">#da70d6</color>
     <color name="dark_orchid">#9932cc</color>
+    <color name="light_orchid">#eaaee8</color>
+    <color name="colorHighLight">#b6b6b6</color><!-- gray -->
     
 </resources>
