@@ -47,55 +47,40 @@ public enum OrchidTypes {
 			if (orhidType.equals("Phaelanopsis")) {
 				this.waterFrequencyDays = Constants.WEEKLY;
 				this.fertilizeFrequencyDays = Constants.BYWEEKLY;
-			} else {
-				if (orhidType.equals("Dendrobium")) {
-					this.waterFrequencyDays = Constants.WEEKLY;
-					this.fertilizeFrequencyDays = Constants.WEEKLY;
-				} else {
-					if (orhidType.equals("Oncidium")) {
-						this.waterFrequencyDays = Constants.WEEKLY;
-						this.fertilizeFrequencyDays = Constants.WEEKLY;
-					} else {
-						Log.d(Constants.TAG, "Wrong Type of orchid");
-					}
-				}
-			}
+			} else if (orhidType.equals("Dendrobium")) {
+				this.waterFrequencyDays = Constants.WEEKLY;
+				this.fertilizeFrequencyDays = Constants.WEEKLY;
+			} else if (orhidType.equals("Oncidium")) {
+				this.waterFrequencyDays = Constants.WEEKLY;
+				this.fertilizeFrequencyDays = Constants.WEEKLY;
+			} else
+				Log.d(Constants.TAG, "Wrong Type of orchid");
 			break;
 		case AUTUMN:
 			if (orhidType.equals("Phaelanopsis")) {
 				this.waterFrequencyDays = Constants.WEEKLY;
 				this.fertilizeFrequencyDays = Constants.MONTHLY;
-			} else {
-				if (orhidType.equals("Dendrobium")) {
-					this.waterFrequencyDays = Constants.MONTHLY;
-					this.fertilizeFrequencyDays = Constants.NONE;
-				} else {
-					if (orhidType.equals("Oncidium")) {
-						this.waterFrequencyDays = Constants.BYWEEKLY;
-						this.fertilizeFrequencyDays = Constants.BYWEEKLY;
-					} else {
-						Log.d(Constants.TAG, "Wrong Type of orchid");
-					}
-				}
-			}
+			} else if (orhidType.equals("Dendrobium")) {
+				this.waterFrequencyDays = Constants.MONTHLY;
+				this.fertilizeFrequencyDays = Constants.NONE;
+			} else if (orhidType.equals("Oncidium")) {
+				this.waterFrequencyDays = Constants.BYWEEKLY;
+				this.fertilizeFrequencyDays = Constants.BYWEEKLY;
+			} else
+				Log.d(Constants.TAG, "Wrong Type of orchid");
 			break;
 		case WINTER:
 			if (orhidType.equals("Phaelanopsis")) {
 				this.waterFrequencyDays = Constants.WEEKLY;
 				this.fertilizeFrequencyDays = Constants.BYWEEKLY;
-			} else {
-				if (orhidType.equals("Dendrobium")) {
-					this.waterFrequencyDays = Constants.WEEKLY;
-					this.fertilizeFrequencyDays = Constants.BYWEEKLY;
-				} else {
-					if (orhidType.equals("Oncidium")) {
-						this.waterFrequencyDays = Constants.WEEKLY;
-						this.fertilizeFrequencyDays = Constants.BYWEEKLY;
-					} else {
-						Log.d(Constants.TAG, "Wrong Type of orchid");
-					}
-				}
-			}
+			} else if (orhidType.equals("Dendrobium")) {
+				this.waterFrequencyDays = Constants.WEEKLY;
+				this.fertilizeFrequencyDays = Constants.BYWEEKLY;
+			} else if (orhidType.equals("Oncidium")) {
+				this.waterFrequencyDays = Constants.WEEKLY;
+				this.fertilizeFrequencyDays = Constants.BYWEEKLY;
+			} else
+				Log.d(Constants.TAG, "Wrong Type of orchid");
 			break;
 		}
 		// add default statement

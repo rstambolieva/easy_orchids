@@ -18,13 +18,14 @@ import com.example.easyorchids.MyOrchidsContract.MyOrchidsTable;
 
 /**
  * 
- * DBAdapter class provides the CRUD operations on the DB. An extension to
- * SQLiteOpenHelper is created for creating, deleting and upgrading the DB
+ * This class provides the CRUD operations on the DB as well as creating,
+ * upgrading and deleting the database.
  *
  */
-public class DBAdapter {
+public class DatabaseHelper extends SQLiteOpenHelper {
+
 	// Path to the place where the DB will be copied on the android device
-	private static String DB_PATH = "/data/data/com.example.easyorchids/databases/";
+	private static String DATABASE_PATH = "/data/data/com.example.easyorchids/databases/";
 	private static final String TAG_DB = "DBAdapter";
 	private static final String DATABASE_NAME = "easy_orchids.db";
 	private static final int DATABASE_VERSION = 1;
@@ -54,10 +55,9 @@ public class DBAdapter {
 	private static final String SQL_DELETE_ORCHIDS_TABLE = "DROP TABLE IF EXISTS "
 			+ MyOrchidsTable.TABLE_NAME;
 	// static to be accessed by the inner class
-	private static Context context;
-	private DatabaseHelper DBHelper;
+	private final Context context;
 	// static to be accessed by the inner class
-	private static SQLiteDatabase db;
+	private SQLiteDatabase db;
 	private String[] allColumns = { MyOrchidsTable.COLUMN_NAME_ORCHID_ID,
 			MyOrchidsTable.COLUMN_NAME_ORCHID_NAME,
 			MyOrchidsTable.COLUMN_NAME_ORCHID_TYPE,
@@ -66,157 +66,150 @@ public class DBAdapter {
 			MyOrchidsTable.COLUMN_NAME_ORCHID_OUTSIDE_STATE,
 			MyOrchidsTable.PICTURE_PATH };
 
-	public DBAdapter(Context ctx) {
-		this.context = ctx;
-		DBHelper = new DatabaseHelper(context);
+	/**
+	 * Constructor Takes and keeps a reference of the passed context in order to
+	 * access to the application assets and resources.
+	 * 
+	 * @param context
+	 */
+	public DatabaseHelper(Context context) {
+		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+		this.context = context;
 	}
 
 	/**
-	 * 
-	 * Provides access to the DB and specifies creating and upgrading the DB
-	 *
-	 */
-	private static class DatabaseHelper extends SQLiteOpenHelper {
-		DatabaseHelper(Context context) {
-			super(context, DATABASE_NAME, null, DATABASE_VERSION);
-		}
+	 * Creates a empty database on the system and rewrites it with your own
+	 * database.
+	 * */
+	public void createDataBase() throws IOException {
 
-		/**
-		 * Creates a empty database on the system and rewrites it with your own
-		 * database.
-		 * */
-		public void createDataBase() throws IOException {
+		boolean dbExist = checkDataBase();
 
-			boolean dbExist = checkDataBase();
+		if (dbExist) {
+			// do nothing - database already exist
+		} else {
 
-			if (dbExist) {
-				// do nothing - database already exist
-			} else {
+			// By calling this method and empty database will be created
+			// into the default system path
+			// of your application so we are gonna be able to overwrite that
+			// database with our database.
+			this.getReadableDatabase();
 
-				// By calling this method and empty database will be created
-				// into the default system path
-				// of your application so we are gonna be able to overwrite that
-				// database with our database.
-				this.getReadableDatabase();
-
-				try {
-
-					copyDataBase();
-
-				} catch (IOException e) {
-
-					throw new Error("Error copying database");
-
-				}
-			}
-
-		}
-
-		/**
-		 * Check if the database exisst to avoid re-copying the file each time
-		 * you open the application.
-		 * 
-		 * @return true if it exists, false if it doesn't
-		 */
-		private boolean checkDataBase() {
-
-			SQLiteDatabase checkDB = null;
 			try {
-				String myPath = DB_PATH + DATABASE_NAME;
-				checkDB = SQLiteDatabase.openDatabase(myPath, null,
-						SQLiteDatabase.OPEN_READONLY);
 
-			} catch (SQLiteException e) {
-				// database does't exist yet.
-				Log.d(Constants.TAG,
-						"Myorchids DB doesn't exist. We must create it.");
+				copyDataBase();
+
+			} catch (IOException e) {
+
+				throw new Error("Error copying database");
+
 			}
-
-			if (checkDB != null) {
-				checkDB.close();
-			}
-
-			return checkDB != null ? true : false;
 		}
 
-		/**
-		 * Copies your database from your local assets-folder to the just
-		 * created empty database in the system folder, from where it can be
-		 * accessed and handled. This is done by transferring bytestream.
-		 * */
-		private void copyDataBase() throws IOException {
+	}
 
-			// Open your local db as the input stream
-			InputStream myInput = context.getAssets().open(DATABASE_NAME);
+	// Оpens the database
+	public void openDB() throws SQLException {
+		// Log.d(Constants.TAG, "Opening DB");
+		//
+		String myPath = DATABASE_PATH + DATABASE_NAME;
+		db = SQLiteDatabase.openDatabase(myPath, null,
+				SQLiteDatabase.OPEN_READWRITE);
+	}
 
-			// Path to the just created empty db
-			String outFileName = DB_PATH + DATABASE_NAME;
+	/**
+	 * Check if the database exists to avoid re-copying the file each time you
+	 * open the application.
+	 * 
+	 * @return true if it exists, false if it doesn't
+	 */
+	private boolean checkDataBase() {
 
-			// Open the empty db as the output stream
-			OutputStream myOutput = new FileOutputStream(outFileName);
+		SQLiteDatabase checkDB = null;
+		try {
+			String myPath = DATABASE_PATH + DATABASE_NAME;
+			checkDB = SQLiteDatabase.openDatabase(myPath, null,
+					SQLiteDatabase.OPEN_READONLY);
 
-			// transfer bytes from the inputfile to the outputfile
-			byte[] buffer = new byte[1024];
-			int length;
-			while ((length = myInput.read(buffer)) > 0) {
-				myOutput.write(buffer, 0, length);
-			}
-
-			// Close the streams
-			myOutput.flush();
-			myOutput.close();
-			myInput.close();
-
+		} catch (SQLiteException e) {
+			// database does't exist yet.
+			Log.d(Constants.TAG,
+					"Myorchids DB doesn't exist. We must create it.");
 		}
 
-		@Override
-		public synchronized void close() {
-
-			if (db != null)
-				db.close();
-
-			super.close();
-
+		if (checkDB != null) {
+			checkDB.close();
 		}
 
-		@Override
-		public void onCreate(SQLiteDatabase db) {
-			Log.d(Constants.TAG, "Creating DB");
-			db.execSQL(SQL_CREATE_ORCHIDS_TABLE);
+		return checkDB != null ? true : false;
+	}
+
+	/**
+	 * Copies your database from your local assets-folder to the just created
+	 * empty database in the system folder, from where it can be accessed and
+	 * handled. This is done by transferring bytestream.
+	 * */
+	private void copyDataBase() throws IOException {
+
+		// Open your local db as the input stream
+		InputStream myInput = context.getAssets().open(DATABASE_NAME);
+
+		// Path to the just created empty db
+		String outFileName = DATABASE_PATH + DATABASE_NAME;
+
+		// Open the empty db as the output stream
+		OutputStream myOutput = new FileOutputStream(outFileName);
+
+		// transfer bytes from the inputfile to the outputfile
+		byte[] buffer = new byte[1024];
+		int length;
+		while ((length = myInput.read(buffer)) > 0) {
+			myOutput.write(buffer, 0, length);
 		}
 
-		@Override
-		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			Log.w(TAG_DB, "Upgrading database from version " + oldVersion
-					+ " to " + newVersion + ", which will destroy all old data");
-			db.execSQL(SQL_DELETE_ORCHIDS_TABLE);
-			onCreate(db);
-		}
+		// Close the streams
+		myOutput.flush();
+		myOutput.close();
+		myInput.close();
+
+	}
+
+	@Override
+	public synchronized void close() {
+
+		if (db != null)
+			db.close();
+
+		super.close();
+
+	}
+
+	@Override
+	public void onCreate(SQLiteDatabase db) {
+		// Log.d(Constants.TAG, "Creating DB");
+		// db.execSQL(SQL_CREATE_ORCHIDS_TABLE);
+	}
+
+	@Override
+	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+		// Log.w(TAG_DB, "Upgrading database from version " + oldVersion +
+		// " to "
+		// + newVersion + ", which will destroy all old data");
+		// db.execSQL(SQL_DELETE_ORCHIDS_TABLE);
+		// onCreate(db);
 	}
 
 	// Drop the DB
-	public void dropOrchidsTable() {
+	public void dropOrchidsTable(SQLiteDatabase db) {
 		Log.d(Constants.TAG, "Dropping the orchids table");
 		db.execSQL(SQL_DELETE_ORCHIDS_TABLE);
 	}
 
-	// Оpens the database
-	public DBAdapter open() throws SQLException {
-		Log.d(Constants.TAG, "Opening DB");
-		db = DBHelper.getWritableDatabase();
-		return this;
-	}
-
-	// Closes the database
-	public void close() {
-		Log.d(Constants.TAG, "Closing DB");
-		DBHelper.close();
-	}
-
 	// Inserts an orchid into the database
-	public long insertOrchid(String orchidName, OrchidTypes orchidType,
-			String wateredDate, String fertilizedDate, String outsideState,
-			String dayTemp, String nightTemp, String picturePath) {
+	public long insertOrchid(SQLiteDatabase db, String orchidName,
+			OrchidTypes orchidType, String wateredDate, String fertilizedDate,
+			String outsideState, String dayTemp, String nightTemp,
+			String picturePath) {
 		Log.d(Constants.TAG, "Inserting an orchid");
 
 		ContentValues initialValues = new ContentValues();

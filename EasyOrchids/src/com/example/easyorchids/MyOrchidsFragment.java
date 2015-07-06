@@ -1,9 +1,11 @@
 package com.example.easyorchids;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.database.Cursor;
+import android.database.SQLException;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
@@ -46,13 +48,29 @@ public class MyOrchidsFragment extends ListFragment {
 
 		// Getting the Activity as the Activity is a Context to provide to the
 		// dbHelper for context
-		DBAdapter dbAdapter = new DBAdapter(getActivity());
+		DatabaseHelper dbHelper = new DatabaseHelper(getActivity());
+
+		getActivity().deleteDatabase(
+				MyOrchidsContract.MyOrchidsTable.TABLE_NAME);
+
+		// Create the DB
+		try {
+			dbHelper.createDataBase();
+		} catch (IOException ioe) {
+			throw new Error("Unable to create database");
+		}
+
+		// Open the DB for reading
+		try {
+			dbHelper.openDB();
+
+		} catch (SQLException sqle) {
+			throw sqle;
+		}
 
 		// Open the DB for writing
 		// dbAdapter.open();
 		// dbAdapter.dropOrchidsTable();
-		// getActivity().deleteDatabase(
-		// MyOrchidsContract.MyOrchidsTable.TABLE_NAME);
 
 		// // Remove elements insertion from
 		// here//////////////////////////////////
@@ -69,7 +87,7 @@ public class MyOrchidsFragment extends ListFragment {
 		// Remove elements insertion from here/////////////////////////////////
 
 		// Display a list view of the orchids in the DB
-		Cursor orchidsCursor = dbAdapter.getAllOrchids();
+		Cursor orchidsCursor = dbHelper.getAllOrchids();
 		List<Orchid> allOrchids = getOrchids(orchidsCursor);
 
 		// use the SimpleCursorAdapter to show the
@@ -107,7 +125,7 @@ public class MyOrchidsFragment extends ListFragment {
 		};
 
 		setListAdapter(adapter);
-		dbAdapter.close();
+		dbHelper.close();
 		// setListAdapter();
 	}
 
@@ -150,10 +168,10 @@ public class MyOrchidsFragment extends ListFragment {
 		orchid.setOrchidName(c.getString(1));
 		orchid.setLastWatering(c.getString(2));
 		orchid.setLastFertilizing(c.getString(3));
-		if (checkInputValidity(c)) {
-			orchid.setIsOutside(c.getString(4));
-		} else
-			throw new Error("Wrong input in orchid outside state");
+		// if (checkInputValidity(c)) {
+		// orchid.setIsOutside(c.getString(4));
+		// } else
+		// throw new Error("Wrong input in orchid outside state");
 
 		orchid.setIsOutside(c.getString(4));
 		orchid.setPicturePath(c.getString(5));
@@ -178,7 +196,7 @@ public class MyOrchidsFragment extends ListFragment {
 
 	/**
 	 * 
-	 * @return true if input is valid, false otherwise
+	 * @return true if input is valid, false otherwise for the outside state.
 	 */
 	private boolean checkInputValidity(Cursor c) {
 		boolean result = false;
