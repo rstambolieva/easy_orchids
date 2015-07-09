@@ -9,5 +9,10 @@
         android:title="@string/action_settings"
         android:showAsAction="ifRoom|withText"
         />
+    <!-- Add orchid action button -->
+    <item android:id="@+id/add_orchid"
+          android:icon="@android:drawable/btn_plus"
+          android:title="@string/add_orchid_string"
+          android:showAsAction="ifRoom" />
 
 </menu>

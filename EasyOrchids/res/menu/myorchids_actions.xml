@@ -5,18 +5,9 @@
           android:icon="@android:drawable/edit_text"
           android:title="@string/edit_orchid_string"
           android:showAsAction="ifRoom" />
-    <!-- Add orchid action button -->
-    <item android:id="@+id/add_orchid"
-          android:icon="@android:drawable/btn_plus"
-          android:title="@string/add_orchid_string"
-          android:showAsAction="ifRoom" />
     <!-- Delete orchid action button -->
     <item android:id="@+id/delete_orchid"
           android:icon="@android:drawable/ic_delete"
           android:title="@string/delete_orchid_string"
           android:showAsAction="ifRoom" />
-    <!-- Settings, should always be in the overflow -->
-    <item android:id="@+id/action_settings"
-          android:title="@string/action_settings"
-          android:showAsAction="never" />
 </menu>

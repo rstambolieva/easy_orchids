@@ -8,7 +8,12 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v7.internal.widget.AdapterViewCompat.AdapterContextMenuInfo;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -30,6 +35,7 @@ public class MyOrchidsFragment extends ListFragment {
 
 		View rootView = inflater.inflate(R.layout.myorchids_list_view,
 				container, false);
+
 		return rootView;
 	}
 
@@ -37,6 +43,8 @@ public class MyOrchidsFragment extends ListFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
+		// register myorchidslist for context menu
+		registerForContextMenu(getListView());
 		// get the view returned in onCreate view and get the floating action
 		// button.
 
@@ -80,6 +88,40 @@ public class MyOrchidsFragment extends ListFragment {
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		// TODO implement some logic
+	}
+
+	// @Override
+	// public boolean onCreateOptionsMenu(Menu menu) {
+	// // Inflate the menu items for use in the action bar
+	// MenuInflater inflater = getActivity().getMenuInflater();
+	// inflater.inflate(R.menu.myorchids_actions, menu);
+	// return super.onCreateOptionsMenu(menu);
+	// }
+
+	// Invoked at long click event. Inflate menu items
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		MenuInflater inflater = getActivity().getMenuInflater();
+		inflater.inflate(R.menu.myorchids_actions, menu);
+	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+				.getMenuInfo();
+		// switch (item.getItemId()) {
+		// case R.id.edit_orchid:
+		// editOrchid(info.id);
+		// return true;
+		// case R.id.delete_orchid:
+		// deleteOrchid(info.id);
+		// return true;
+		// default:
+		// return super.onContextItemSelected(item);
+		// }
+		return super.onContextItemSelected(item);
 	}
 
 	private void displayOrchid(Cursor cursor) {
