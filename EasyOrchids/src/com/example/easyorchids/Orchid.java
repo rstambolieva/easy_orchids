@@ -16,6 +16,8 @@ public class Orchid {
 	// expected values "yes", "no"
 	private String isOutside;
 	private String picturePath;
+	// remove picture_icon once you select image from gallery
+	private int picture_icon;
 
 	// Getters and Setters
 	public long getId() {
@@ -69,6 +71,14 @@ public class Orchid {
 
 	public void setPicturePath(String picturePath) {
 		this.picturePath = picturePath;
+	}
+
+	public int getPicture_icon() {
+		return picture_icon;
+	}
+
+	public void setPicture_icon(int picture_icon) {
+		this.picture_icon = picture_icon;
 	}
 
 	// To be used in the array adapter in the listview

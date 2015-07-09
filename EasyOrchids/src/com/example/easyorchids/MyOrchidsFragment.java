@@ -11,14 +11,11 @@ import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 /*
  * This class represents the my orchids list view with all my orchids.
- * It populates the orchids from the DB
+ * It populates the orchids from the DB and displays and orchid name and picture. Added a floating add button to add orchids.
  */
 public class MyOrchidsFragment extends ListFragment {
 	public static final String ARG_MENU_ITEM_NUMBER = "menu_item_number";
@@ -40,14 +37,9 @@ public class MyOrchidsFragment extends ListFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
-		// orchidsList = getResources().getStringArray(R.array.my_orchids);
-		//
-		// ArrayAdapter<String> adapter = new
-		// ArrayAdapter<String>(getActivity(),
-		// R.layout.myorchid_list_item, orchidsList);
+		// get the view returned in onCreate view and get the floating action
+		// button.
 
-		// Getting the Activity as the Activity is a Context to provide to the
-		// dbHelper for context
 		DatabaseHelper dbHelper = new DatabaseHelper(getActivity());
 
 		getActivity().deleteDatabase(
@@ -68,92 +60,27 @@ public class MyOrchidsFragment extends ListFragment {
 			throw sqle;
 		}
 
-		// Open the DB for writing
-		// dbAdapter.open();
-		// dbAdapter.dropOrchidsTable();
-
-		// // Remove elements insertion from
-		// here//////////////////////////////////
-		// long id;
-		//
-		// Log.d(Constants.TAG, "Inserting orchids");
-		// id = dbAdapter.insertOrchid("Pah 1", OrchidTypes.PHAELANOPSIS,
-		// "1 Sep",
-		// "1 Sep");
-		// id = dbAdapter.insertOrchid("Pah 2", OrchidTypes.PHAELANOPSIS,
-		// "1 Sep",
-		// "1 Sep");
-
-		// Remove elements insertion from here/////////////////////////////////
-
 		// Display a list view of the orchids in the DB
 		Cursor orchidsCursor = dbHelper.getAllOrchids();
 		List<Orchid> allOrchids = getOrchids(orchidsCursor);
 
-		// use the SimpleCursorAdapter to show the
-		// elements in a ListView, provide an id of the textview to use more
-		// complex layout.Use getActivity() to get the current context
-		// TODO: Apply the ViewHolder Pattern for better performance of the list
+		// remove this when you add functionality to select pictures
+		for (Orchid orch : allOrchids) {
+			orch.setPicture_icon(R.drawable.orch_1);
+			;
+		}
 
-		ArrayAdapter<Orchid> adapter = new ArrayAdapter<Orchid>(getActivity(),
-				R.layout.myorchid_list_item, R.id.orchid_name, allOrchids) {
-
-			// Override the getView method to make the transition from Obj to
-			// View item
-			@Override
-			public View getView(int position, View convertView, ViewGroup parent) {
-				// Get the data item for this position
-				Orchid orchid = getItem(position);
-				// Check if an existing view is being reused, otherwise inflate
-				// the view
-				if (convertView == null) {
-					convertView = LayoutInflater.from(getContext()).inflate(
-							R.layout.myorchid_list_item, parent, false);
-				}
-				// Lookup view for data population
-				TextView orchidName = (TextView) convertView
-						.findViewById(R.id.orchid_name);
-				ImageView imageView = (ImageView) convertView
-						.findViewById(R.id.orchid_img);
-				// Populate the data into the template view using the data
-				// object
-				orchidName.setText(orchid.getOrchidName());
-
-				// Return the completed view to render on screen
-				return convertView;
-			}
-		};
+		final MyOrchidsAdapter adapter = new MyOrchidsAdapter(getActivity(),
+				R.layout.myorchid_list_item, allOrchids);
 
 		setListAdapter(adapter);
 		dbHelper.close();
-		// setListAdapter();
 	}
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		// TODO implement some logic
 	}
-
-	// public MyOrchids() {
-	// // Empty constructor required for fragment subclasses
-	// }
-
-	// @Override
-	// public View onCreateView(LayoutInflater inflater, ViewGroup container,
-	// Bundle savedInstanceState) {
-	// View rootView = inflater.inflate(R.layout.fragment_orchid, container,
-	// false);
-	// int i = getArguments().getInt(ARG_MENU_ITEM_NUMBER);
-	// String orchid = getResources().getStringArray(R.array.main_menu)[i];
-
-	// int imageId = getResources().getIdentifier(
-	// orchid.toLowerCase(Locale.getDefault()), "drawable",
-	// getActivity().getPackageName());
-	// ((ImageView) rootView.findViewById(R.id.image))
-	// .setImageResource(imageId);
-	// getActivity().setTitle(orchid);
-	// return rootView;
-	// }
 
 	private void displayOrchid(Cursor cursor) {
 
