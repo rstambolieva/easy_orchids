@@ -12,6 +12,7 @@ import android.support.v7.internal.widget.AdapterViewCompat.AdapterContextMenuIn
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -43,8 +44,12 @@ public class MyOrchidsFragment extends ListFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
-		// register myorchidslist for context menu
+		// Register myorchidslist for context menu
 		registerForContextMenu(getListView());
+
+		// Report that this fragment will populate the options menu
+		setHasOptionsMenu(true);
+
 		// get the view returned in onCreate view and get the floating action
 		// button.
 
@@ -90,13 +95,12 @@ public class MyOrchidsFragment extends ListFragment {
 		// TODO implement some logic
 	}
 
-	// @Override
-	// public boolean onCreateOptionsMenu(Menu menu) {
-	// // Inflate the menu items for use in the action bar
-	// MenuInflater inflater = getActivity().getMenuInflater();
-	// inflater.inflate(R.menu.myorchids_actions, menu);
-	// return super.onCreateOptionsMenu(menu);
-	// }
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		// Inflate the menu items for use in the action bar
+		// MenuInflater inflater = getActivity().getMenuInflater();
+		inflater.inflate(R.menu.myorchids_options, menu);
+	}
 
 	// Invoked at long click event. Inflate menu items
 	@Override
@@ -127,6 +131,21 @@ public class MyOrchidsFragment extends ListFragment {
 	private void displayOrchid(Cursor cursor) {
 
 	}
+
+	// @Override
+	// public boolean onOptionsItemSelected(MenuItem item) {
+	// // Handle presses on the action bar items
+	// switch (item.getItemId()) {
+	// case R.id.action_search:
+	// openSearch();
+	// return true;
+	// case R.id.action_compose:
+	// composeMessage();
+	// return true;
+	// default:
+	// return super.onOptionsItemSelected(item);
+	// }
+	// }
 
 	// Convert from cursor object to Orchid Object and populate orchid fields
 	// Return the resulting orchid object.

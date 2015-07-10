@@ -25,13 +25,33 @@
     <string name="desc_list_item_icon">Item Icon</string>
     
     <!-- Material Deign Strings -->
-    <string name="orchids_main">My orchids main page</string>
+    <string name="orchids_main">Main Page</string>
     <string name="easyOrchids">Easy Orchid</string>
     
     <!-- My orchids list menu strings -->
     <string name="edit_orchid_string">Edit</string>
-    <string name="add_orchid_string">Add orchid</string>
+    <string name="add_orchid_string">Add Orchid</string>
     <string name="delete_orchid_string">Delete</string>
     
-
+    <!-- Types of orchids for the spinner -->
+    <string-array name="orchid_types">
+        <item>Phaelanopsis</item>
+        <item>Dendrobium</item>
+        <item>Oncidium</item>
+    </string-array>
+    
+    <string name="orchid_types_prompt">Choose Type</string>
+    <string name="last_watered_d">Last Watered</string>
+    <string name="last_fertilized_d">Last Fertilized</string>
+    <string name="chk_isoutside"> Is Outside</string>
+    <string name="season_prompt">Choose Season</string>
+    
+    <!-- Seasons for the spinner -->
+    <string-array name="seasons_array">
+        <item>Summer</item>
+        <item>Autumn</item>
+        <item>Winter</item>
+        <item>Spring</item>
+    </string-array>
+    
 </resources>

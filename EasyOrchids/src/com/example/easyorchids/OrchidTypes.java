@@ -11,7 +11,7 @@ import android.util.Log;
  */
 public enum OrchidTypes {
 	PHAELANOPSIS("Phaelanopsis", Seasons.SUMMER), DENDROBIUM("Dendrobium",
-			Seasons.SUMMER), ONCIDIUM("Oncidiium", Seasons.SUMMER);
+			Seasons.SUMMER), ONCIDIUM("Oncidium", Seasons.SUMMER);
 
 	private String name;
 	private int waterFrequencyDays;
