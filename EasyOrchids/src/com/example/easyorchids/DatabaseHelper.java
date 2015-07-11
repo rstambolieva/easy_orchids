@@ -109,12 +109,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	// Оpens the database
-	public void openDB() throws SQLException {
+	public SQLiteDatabase openDB() throws SQLException {
 		// Log.d(Constants.TAG, "Opening DB");
 		//
 		String myPath = DATABASE_PATH + DATABASE_NAME;
 		db = SQLiteDatabase.openDatabase(myPath, null,
 				SQLiteDatabase.OPEN_READWRITE);
+		return db;
 	}
 
 	/**
@@ -207,9 +208,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	// Inserts an orchid into the database
 	public long insertOrchid(SQLiteDatabase db, String orchidName,
-			OrchidTypes orchidType, String wateredDate, String fertilizedDate,
-			String outsideState, String dayTemp, String nightTemp,
-			String picturePath) {
+			String orchidType, String wateredDate, String fertilizedDate,
+			String outsideState, String picturePath) {
 		Log.d(Constants.TAG, "Inserting an orchid");
 
 		ContentValues initialValues = new ContentValues();

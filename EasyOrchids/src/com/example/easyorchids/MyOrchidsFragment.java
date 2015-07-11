@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ public class MyOrchidsFragment extends ListFragment {
 	public static final String ARG_MENU_ITEM_NUMBER = "menu_item_number";
 	private ListView myOrchidsList;
 	private String[] orchidsList;
+	private String CUSTOM_ACTION = "com.example.easyorchids.ADD_ORCHID";
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -97,12 +99,10 @@ public class MyOrchidsFragment extends ListFragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		// Inflate the menu items for use in the action bar
-		// MenuInflater inflater = getActivity().getMenuInflater();
 		inflater.inflate(R.menu.myorchids_options, menu);
 	}
 
-	// Invoked at long click event. Inflate menu items
+	// Invoked at long click event. Inflate menu items for context menu
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
@@ -111,6 +111,7 @@ public class MyOrchidsFragment extends ListFragment {
 		inflater.inflate(R.menu.myorchids_actions, menu);
 	}
 
+	// Invoked at long click on context menu item
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
@@ -128,24 +129,34 @@ public class MyOrchidsFragment extends ListFragment {
 		return super.onContextItemSelected(item);
 	}
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle presses on the action bar items
+		switch (item.getItemId()) {
+		case R.id.add_orchid:
+			// Invoke an intent to gather add orchid data
+			Intent addOrchidIntent = new Intent(getActivity(), AddOrchid.class);
+			// addOrchidIntent.setAction(CUSTOM_ACTION);
+			startActivity(addOrchidIntent);
+			// Save the data from intent to the db
+			// DatabaseHelper dbHelper = new DatabaseHelper(getActivity());
+			// dbHelper.insertOrchid(dbHelper.openDB(), orchidName, orchidType,
+			// wateredDate, fertilizedDate, outsideState, dayTemp, nightTemp,
+			// picturePath)
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
 	private void displayOrchid(Cursor cursor) {
 
 	}
 
-	// @Override
-	// public boolean onOptionsItemSelected(MenuItem item) {
-	// // Handle presses on the action bar items
-	// switch (item.getItemId()) {
-	// case R.id.action_search:
-	// openSearch();
-	// return true;
-	// case R.id.action_compose:
-	// composeMessage();
-	// return true;
-	// default:
-	// return super.onOptionsItemSelected(item);
-	// }
-	// }
+	// Adding an orchid and saving it to DB
+	private void addOrchid(Orchid orchid) {
+
+	}
 
 	// Convert from cursor object to Orchid Object and populate orchid fields
 	// Return the resulting orchid object.
