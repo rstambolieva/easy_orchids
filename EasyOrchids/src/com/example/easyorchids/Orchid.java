@@ -11,6 +11,7 @@ import android.util.Log;
 public class Orchid {
 	private long id;
 	private String orchidName;
+	private String orchidType;
 	private String lastWatering;
 	private String lastFertilizing;
 	// expected values "yes", "no"
@@ -34,6 +35,14 @@ public class Orchid {
 
 	public void setOrchidName(String orchidName) {
 		this.orchidName = orchidName;
+	}
+
+	public String getOrchidType() {
+		return orchidType;
+	}
+
+	public void setOrchidType(String orchidType) {
+		this.orchidType = orchidType;
 	}
 
 	public String getLastWatering() {

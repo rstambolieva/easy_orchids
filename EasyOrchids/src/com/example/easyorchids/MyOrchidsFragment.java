@@ -165,15 +165,16 @@ public class MyOrchidsFragment extends ListFragment {
 		Orchid orchid = new Orchid();
 		orchid.setId(c.getLong(0));
 		orchid.setOrchidName(c.getString(1));
-		orchid.setLastWatering(c.getString(2));
-		orchid.setLastFertilizing(c.getString(3));
-		// if (checkInputValidity(c)) {
-		// orchid.setIsOutside(c.getString(4));
-		// } else
-		// throw new Error("Wrong input in orchid outside state");
+		orchid.setOrchidType(c.getString(2));
+		orchid.setLastWatering(c.getString(3));
+		orchid.setLastFertilizing(c.getString(4));
+		if (checkInputValidity(c)) {
+			orchid.setIsOutside(c.getString(4));
+		} else
+			throw new Error("Wrong input in orchid outside state");
 
-		orchid.setIsOutside(c.getString(4));
-		orchid.setPicturePath(c.getString(5));
+		orchid.setIsOutside(c.getString(5));
+		orchid.setPicturePath(c.getString(6));
 		// release cursor resources, not sure if this should go here
 		// c.close();
 		return orchid;
@@ -199,9 +200,9 @@ public class MyOrchidsFragment extends ListFragment {
 	 */
 	private boolean checkInputValidity(Cursor c) {
 		boolean result = false;
-		if (c.getString(4) != null) {
-			if (c.getString(4).toLowerCase().equals(YesNoEnum.YES.toString())
-					|| c.getString(4).toLowerCase()
+		if (c.getString(5) != null) {
+			if (c.getString(5).toLowerCase().equals(YesNoEnum.YES.toString())
+					|| c.getString(5).toLowerCase()
 							.equals(YesNoEnum.NO.toString())) {
 				return true;
 			}
