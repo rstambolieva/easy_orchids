@@ -54,7 +54,13 @@ public class MyOrchidsAdapter extends ArrayAdapter<Orchid> {
 		return row;
 	}
 
-	static class OrchidHolder {
+	// Refresh the adapter list for add/delete/edit operations on MyOrchids list
+	public void refresh(List<Orchid> orchidsList) {
+		this.orchidsList = orchidsList;
+		notifyDataSetChanged();
+	}
+
+	private static class OrchidHolder {
 		ImageView imgIcon;
 		TextView txtTitle;
 	}

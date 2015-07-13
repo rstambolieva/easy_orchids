@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.support.v7.internal.widget.AdapterViewCompat.AdapterContextMenuInfo;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -18,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 
 /*
@@ -29,6 +29,9 @@ public class MyOrchidsFragment extends ListFragment {
 	private ListView myOrchidsList;
 	private String[] orchidsList;
 	private String CUSTOM_ACTION = "com.example.easyorchids.ADD_ORCHID";
+	private DatabaseHelper dbHelper;
+	private MyOrchidsAdapter adapter;
+	List<Orchid> allOrchids;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,7 +58,7 @@ public class MyOrchidsFragment extends ListFragment {
 		// get the view returned in onCreate view and get the floating action
 		// button.
 
-		DatabaseHelper dbHelper = new DatabaseHelper(getActivity());
+		dbHelper = new DatabaseHelper(getActivity());
 
 		getActivity().deleteDatabase(
 				MyOrchidsContract.MyOrchidsTable.TABLE_NAME);
@@ -77,7 +80,7 @@ public class MyOrchidsFragment extends ListFragment {
 
 		// Display a list view of the orchids in the DB
 		Cursor orchidsCursor = dbHelper.getAllOrchids();
-		List<Orchid> allOrchids = getOrchids(orchidsCursor);
+		allOrchids = getOrchids(orchidsCursor);
 
 		// remove this when you add functionality to select pictures
 		for (Orchid orch : allOrchids) {
@@ -85,7 +88,7 @@ public class MyOrchidsFragment extends ListFragment {
 			;
 		}
 
-		final MyOrchidsAdapter adapter = new MyOrchidsAdapter(getActivity(),
+		adapter = new MyOrchidsAdapter(getActivity(),
 				R.layout.myorchid_list_item, allOrchids);
 
 		setListAdapter(adapter);
@@ -116,17 +119,35 @@ public class MyOrchidsFragment extends ListFragment {
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
 				.getMenuInfo();
-		// switch (item.getItemId()) {
+		switch (item.getItemId()) {
 		// case R.id.edit_orchid:
 		// editOrchid(info.id);
 		// return true;
-		// case R.id.delete_orchid:
-		// deleteOrchid(info.id);
-		// return true;
-		// default:
-		// return super.onContextItemSelected(item);
-		// }
-		return super.onContextItemSelected(item);
+		case R.id.delete_orchid:
+			dbHelper = new DatabaseHelper(getActivity());
+			// Open the DB for reading
+			try {
+				dbHelper.openDB();
+
+			} catch (SQLException sqle) {
+				throw sqle;
+			}
+			dbHelper.deleteOrchid(info.id);
+
+			// Notify observers that the data in the view has changed
+
+			Cursor orchidsCursor = dbHelper.getAllOrchids();
+			allOrchids = getOrchids(orchidsCursor);
+			adapter = new MyOrchidsAdapter(getActivity(),
+					R.layout.myorchid_list_item, allOrchids);
+			setListAdapter(adapter);
+			adapter.notifyDataSetChanged();
+			dbHelper.close();
+			return true;
+		default:
+			return super.onContextItemSelected(item);
+		}
+
 	}
 
 	@Override
@@ -143,6 +164,7 @@ public class MyOrchidsFragment extends ListFragment {
 			// dbHelper.insertOrchid(dbHelper.openDB(), orchidName, orchidType,
 			// wateredDate, fertilizedDate, outsideState, dayTemp, nightTemp,
 			// picturePath)
+
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -169,7 +191,7 @@ public class MyOrchidsFragment extends ListFragment {
 		orchid.setLastWatering(c.getString(3));
 		orchid.setLastFertilizing(c.getString(4));
 		if (checkInputValidity(c)) {
-			orchid.setIsOutside(c.getString(4));
+			orchid.setIsOutside(c.getString(5));
 		} else
 			throw new Error("Wrong input in orchid outside state");
 
@@ -204,7 +226,7 @@ public class MyOrchidsFragment extends ListFragment {
 			if (c.getString(5).toLowerCase().equals(YesNoEnum.YES.toString())
 					|| c.getString(5).toLowerCase()
 							.equals(YesNoEnum.NO.toString())) {
-				return true;
+				result = true;
 			}
 		}
 

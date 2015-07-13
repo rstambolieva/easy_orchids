@@ -185,6 +185,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	}
 
+	// No need to create and upgrade the db as we copy it
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		// Log.d(Constants.TAG, "Creating DB");
