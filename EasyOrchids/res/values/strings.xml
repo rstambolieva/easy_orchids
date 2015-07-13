@@ -40,12 +40,22 @@
         <item>Oncidium</item>
     </string-array>
     
+    <!-- Add orchids layout strings -->
+    <string name="set_orchid_name">Enter Name</string>
     <string name="orchid_types_prompt">Choose Type</string>
     <string name="last_watered_d">Last Watered</string>
     <string name="last_fertilized_d">Last Fertilized</string>
-    <string name="chk_isoutside"> Is Outside</string>
+    <string name="chk_isoutside"> Is the orchid outside</string>
     <string name="season_prompt">Choose Season</string>
+    <string name="last_watered_btn">Last Watered</string>
+    <string name="last_fertilized_btn">Last Fertilized</string>
+    <string name="choose_season">Choose Season</string>
+    <string name="orchid_type">Choose Type</string>
     
+   <!-- Add orchids action strings -->
+   <string name="add_orchid_cancel_string">Cancel</string>
+   <string name="add_orchid_save_string">Save</string>
+ 
     <!-- Seasons for the spinner -->
     <string-array name="seasons_array">
         <item>Summer</item>

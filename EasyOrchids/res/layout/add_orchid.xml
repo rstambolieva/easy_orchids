@@ -1,98 +1,111 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical" >
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:stretchColumns="1"
+    android:layout_gravity="center_vertical" >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+    <!-- AppBar must be the first element in main content layout -->
+        <!-- <include
+            android:id="@+id/tool_bar"
+            layout="@layout/tool_bar" >
+        </include> -->
+        
+    <TableRow>
 
         <ImageView
             android:id="@+id/add_orchid_img"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="start"
             android:src="@drawable/orch_1" />
 
-        <TextView
+        <EditText
             android:id="@+id/add_orchid_name"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="OrchidName" />
-    </LinearLayout>
+            android:gravity="start"
+            android:text="@string/set_orchid_name" />
+    </TableRow>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+    <TableRow>
 
         <TextView
             android:id="@+id/orchid_type"
-            android:layout_width="79dp"
-            android:layout_height="37dp"
-            android:text="OrchidType" />
+            android:gravity="start"
+            android:text="@string/orchid_type" />
 
         <Spinner
             android:id="@+id/spinner_orchid_types"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:entries="@array/orchid_types"
+            android:gravity="start"
             android:prompt="@string/orchid_types_prompt" />
-    </LinearLayout>
+    </TableRow>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+    <TableRow>
 
         <TextView
             android:id="@+id/last_watered_textview"
-            android:layout_width="79dp"
-            android:layout_height="37dp"
-            android:text="@string/last_watered_d"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:text="@string/last_watered_d" />
 
         <Button
             android:id="@+id/last_watering_date_btn"
-            style="?android:attr/borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="start"
             android:onClick="lastWateringOnclick"
-            android:src="@android:drawable/ic_menu_my_calendar" />
-  
-    </LinearLayout>
+            android:src="@android:drawable/ic_menu_my_calendar"
+            android:text="@string/last_watered_btn" />
+    </TableRow>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+    <TableRow>
 
         <TextView
             android:id="@+id/last_fertilized_textview"
-            android:layout_width="79dp"
-            android:layout_height="37dp"
-            android:text="@string/last_fertilized_d"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:text="@string/last_fertilized_d" />
 
         <Button
             android:id="@+id/last_fertilizing_date_btn"
-            style="?android:attr/borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="start"
             android:onClick="lastFertilizingOnclick"
-            android:src="@android:drawable/ic_menu_my_calendar" />
-   
-    </LinearLayout>
-    
-    <CheckBox
-        android:id="@+id/isoutside_chk"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/chk_isoutside" />
-    
-    <!-- Drop down -->
-     <Spinner
+            android:src="@android:drawable/ic_menu_my_calendar"
+            android:text="@string/last_fertilized_btn" />
+    </TableRow>
+
+    <TableRow>
+
+        <CheckBox
+            android:id="@+id/isoutside_chk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:text="@string/chk_isoutside" />
+    </TableRow>
+    <TableRow>
+         <TextView
+            android:id="@+id/Choose_season_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:text="@string/choose_season" />
+         <Spinner
             android:id="@+id/season_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:entries="@array/seasons_array"
-            android:prompt="@string/season_prompt" />
+            android:prompt="@string/season_prompt"
+            android:text="@string/season_prompt"
+            android:gravity="start" />
+	</TableRow>
 
-</LinearLayout>
+</TableLayout>

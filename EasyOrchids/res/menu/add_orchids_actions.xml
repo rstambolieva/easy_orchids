@@ -1,0 +1,18 @@
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" >
+
+    <item
+        android:id="@+id/addorchid_cancel"
+        android:orderInCategory="100"
+        android:icon="@android:drawable/ic_input_delete"
+        android:title="@string/add_orchid_cancel_string"
+        android:showAsAction="always"
+        />
+    <!-- Add orchid action button -->
+    <item android:id="@+id/addorchid_save"
+          android:icon="@android:drawable/ic_menu_save"
+          android:title="@string/add_orchid_save_string"
+          android:showAsAction="always" />
+</menu>

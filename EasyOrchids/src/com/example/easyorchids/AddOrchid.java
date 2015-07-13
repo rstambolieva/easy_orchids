@@ -2,24 +2,30 @@ package com.example.easyorchids;
 
 import java.util.Calendar;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 // AddOrchid class handles the retrieval of data for adding a new orchid and persisting it to the DB
-public class AddOrchid extends Activity {
+public class AddOrchid extends AppCompatActivity {
+
+	// AppBar
+	private Toolbar mToolbar;
 
 	// boolean to distinguish watering from fertilizing
 	private boolean isWateringDate = true;
-	private TextView orchidName;
+	private EditText orchidName;
 	private Spinner orchidTypeChoice;
 	private Button lastWateredBtn;
 	private Button lastFertilizedBtn;
@@ -35,13 +41,20 @@ public class AddOrchid extends Activity {
 	private String outsideState = YesNoEnum.NO.toString();
 	private String wateredDate;
 	private String fertilizedDate;
+	private static final String APPBAR_TITLE = "Add Orchid";
+	private DatabaseHelper dbHelper;
 
 	@Override
 	public void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
 		setContentView(R.layout.add_orchid);
 
-		orchidName = (TextView) findViewById(R.id.add_orchid_name);
+		// // // Add the appbar
+		// mToolbar = (Toolbar) findViewById(R.id.tool_bar);
+		// // setSupportActionBar(mToolbar);
+		// mToolbar.setTitle(APPBAR_TITLE);
+
+		orchidName = (EditText) findViewById(R.id.add_orchid_name);
 		orchidTypeChoice = (Spinner) findViewById(R.id.spinner_orchid_types);
 		lastWateredBtn = (Button) findViewById(R.id.last_watering_date_btn);
 		lastFertilizedBtn = (Button) findViewById(R.id.last_fertilizing_date_btn);
@@ -49,7 +62,7 @@ public class AddOrchid extends Activity {
 		seasonSpinner = (Spinner) findViewById(R.id.season_spinner);
 
 		// Pass the application context as we need it across the whole app
-		DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+		dbHelper = new DatabaseHelper(getApplicationContext());
 
 		// Open the database for writing
 		try {
@@ -71,6 +84,7 @@ public class AddOrchid extends Activity {
 		lastFertilizedBtn.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
 				// Initialize the Date picker with current date when invoked
+				displayDatePicker();
 			}
 		});
 
@@ -78,10 +92,62 @@ public class AddOrchid extends Activity {
 		if (isOutsideChk.isChecked()) {
 			outsideState = YesNoEnum.YES.toString();
 		}
+	}
+
+	// Create Options Menu with Cancel and Save actions
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.add_orchids_actions, menu);
+		menu.add("Save");
+		menu.add("Delete");
+		// return super.onCreateOptionsMenu(menu);
+		return true;
+		// to open the menu popup
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
 		// Insert the user input for newly added orchid in the DB
-		dbHelper.insertOrchid(db, orchidName.toString(),
-				(String) orchidTypeChoice.getSelectedItem(), wateredDate,
-				fertilizedDate, outsideState, "fakepath");
+		// dbHelper.insertOrchid(db, orchidName.toString(),
+		// (String) orchidTypeChoice.getSelectedItem(), wateredDate,
+		// fertilizedDate, outsideState, "fakepath");
+		//
+		// switch (item.getItemId()) {
+		//
+		// case 1:
+		// // write your code here
+		//
+		// Toast msg = Toast.makeText(MainHomeScreen.this, "Menu 1",
+		// Toast.LENGTH_LONG);
+		// msg.show();
+		// return true;
+		//
+		// case 2:
+		// // code here
+		// return true;
+		//
+		// case 3:
+		// // code here
+		// return true;
+		//
+		// case 4:
+		// // code here
+		// return true;
+		//
+		// case 5:
+		// // code here
+		//
+		// return true;
+		//
+		// case 6:
+		// // code here
+		// return true;
+		//
+		// default:
+		// break;
+		//
+		// }
+		return super.onOptionsItemSelected(item);
 	}
 
 	// Class to implement the behaior when date is set

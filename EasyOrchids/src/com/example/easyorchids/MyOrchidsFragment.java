@@ -26,9 +26,6 @@ import android.widget.ListView;
  */
 public class MyOrchidsFragment extends ListFragment {
 	public static final String ARG_MENU_ITEM_NUMBER = "menu_item_number";
-	private ListView myOrchidsList;
-	private String[] orchidsList;
-	private String CUSTOM_ACTION = "com.example.easyorchids.ADD_ORCHID";
 	private DatabaseHelper dbHelper;
 	private MyOrchidsAdapter adapter;
 	List<Orchid> allOrchids;

@@ -1,19 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-     
-    <TextView
-        android:id="@+id/txtLabel"
-         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Help and Feedback View"/>
-     
-    <ImageView android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/txtLabel"
-        android:src="@drawable/ic_menu_help_holo_light"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"/>
-    
-</RelativeLayout>
+    android:layout_height="match_parent"
+    android:stretchColumns="1"
+    android:layout_gravity="center_vertical" >
+
+    <TableRow>
+
+        <TextView
+            android:id="@+id/txtLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Help and Feedback View" />
+
+         <Button
+            android:id="@+id/feedback_btn"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:onClick="lastWateringOnclick"
+            android:src="@android:drawable/ic_menu_my_calendar"
+            android:text="@string/last_watered_btn" />
+    </TableRow>
+
+</TableLayout>
