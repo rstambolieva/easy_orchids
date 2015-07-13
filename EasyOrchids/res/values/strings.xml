@@ -55,6 +55,12 @@
    <!-- Add orchids action strings -->
    <string name="add_orchid_cancel_string">Cancel</string>
    <string name="add_orchid_save_string">Save</string>
+   
+   <!-- Help and Feedback action strings -->
+   <string name="feedback_string">Feedback</string>
+   <string name="send_to_string"> Send to:</string>
+   <string name="text_message_string">Enter feedback</string>
+   <string name="subject_string">Enter subject</string>
  
     <!-- Seasons for the spinner -->
     <string-array name="seasons_array">
